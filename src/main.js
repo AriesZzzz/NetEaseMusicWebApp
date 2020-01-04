@@ -26,7 +26,8 @@ import {
   Cell, List, SwipeCell,
   Sticky,
   PullRefresh,
-  Notify
+  Notify,
+  ActionSheet
 } from 'vant'
 
 Vue.use(Cookie)
@@ -52,6 +53,7 @@ Vue.use(Button)
   .use(Sticky)
   .use(PullRefresh)
   .use(Notify)
+  .use(ActionSheet)
 
 /* 解决手机浏览器 click 300ms延迟, 会使输入框双击才能聚焦 */
 

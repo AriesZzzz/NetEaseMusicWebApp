@@ -15,7 +15,7 @@
         justify="center"
         v-for="item in songList"
         :key="item.id"
-        @click="play(item.id)"
+        @click="play(item)"
       >
         <van-col span="22">
           <van-swipe-cell :stop-propagation="false">
@@ -84,7 +84,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'playList'
+      'playList',
+      'newSongs'
     ])
   },
   methods: {
@@ -96,21 +97,19 @@ export default {
       console.log(1)
     },
     async getRecommendSongs() {
-     
       const result = await reqRecommendSongs()
-       debugger
       if (result.status === OK) {
-        this.songList = this.songsFormatter(result.data.recommend)// 1.在这里格式化
+        this.songsFormatter(result.data.recommend)
+        this.songList = this.newSongs
       } else {
         Toast(result.statusText)
       }
     },
-    play(songId) {
-      // 2.在这里将格式化后的songList赋值给playList
+    play(song) {
       
-      if (this.verifySong(songId)) {
-        this.playAllSong(songId)
-        this.$router.push({ path: `/player/${songId}` })
+      if (this.verifySong(song.id)) {
+        this.playAllSong(this.songList)
+        this.$router.push({ path: `/player/${song.id}`, query: {song} })
       }
 
     },

@@ -38,16 +38,15 @@ const songs_formatter = (songs) => {
   let tmpName = ''
   songs.forEach(song => {
     let { name, id, artists, album, transName } = song
-
     tmpAlbum = new Album(album.name, album.id, album.blurPicUrl, album.picUrl, album.publishTime)
-    tmpName = `${name}(${transName})`
+    tmpName = `${name}${transName ? `(${transName})` : ''}`
     artists.forEach(artist => {
       tmpArtists.push(new Artists(artist.name, artist.id))
+      
     })
-
     tmpSongItem = new Song(tmpName, id, tmpArtists, tmpAlbum)
-
     tmpSongs.push(tmpSongItem)
+    tmpArtists = [] // 改变原来数组的地址
   })
   return tmpSongs
 }
@@ -55,11 +54,15 @@ const songs_formatter = (songs) => {
 export default new Vuex.Store({
   state: {
     userToken: '',
-    playList: []
+    playList: [],
+    newSongs: []
   },
   getters: {
     playList(state) {
       return state.playList
+    },
+    newSongs(state) {
+      return state.newSongs
     }
   },
   mutations: {
@@ -69,14 +72,14 @@ export default new Vuex.Store({
     initToken(state, initToken) {
       state.userToken = initToken
     },
-    playAllSong(state, song) {
-      state.playList.push(song)
+    playAllSong(state, songList) {
+      state.playList = songList
     },
     playSingleSong(state, song) {
       state.playList.push(song)
     },
     songsFormatter(state, songs) {
-      return songs_formatter(songs)
+      state.newSongs = songs_formatter(songs)
     }
   },
   actions: {

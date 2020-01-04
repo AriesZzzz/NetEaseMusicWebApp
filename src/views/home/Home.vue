@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <van-icon name="bar-chart-o" slot="right" size="24px" class="player-icon" @click="goToPlayer" />
-    <keep-alive>
+    <keep-alive exclude="player">
       <router-view />
     </keep-alive>
 
