@@ -53,9 +53,16 @@ const songs_formatter = (songs) => {
 
 export default new Vuex.Store({
   state: {
+    // 用户 token
     userToken: '',
+    // 播放列表
     playList: [],
-    newSongs: []
+    // 格式化后的歌曲
+    newSongs: [],
+    // 是否展示播放页面
+    isShowPlayer: false,
+    // 正在播放的歌曲
+    playingSong: {}
   },
   getters: {
     playList(state) {
@@ -63,6 +70,12 @@ export default new Vuex.Store({
     },
     newSongs(state) {
       return state.newSongs
+    },
+    isShowPlayer(state) {
+      return state.isShowPlayer
+    },
+    playingSong(state) {
+      return state.playingSong
     }
   },
   mutations: {
@@ -80,6 +93,12 @@ export default new Vuex.Store({
     },
     songsFormatter(state, songs) {
       state.newSongs = songs_formatter(songs)
+    },
+    showPlayer(state, isShowPlayer) {
+      state.isShowPlayer = isShowPlayer
+    },
+    playCurrentSong(state, song) {
+      state.playingSong = song
     }
   },
   actions: {

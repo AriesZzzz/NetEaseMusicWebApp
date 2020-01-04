@@ -1,9 +1,9 @@
 <template>
   <div class="recommend-songs">
+    <stair height="46px" />
     <!-- navbar -->
-    <van-sticky>
-      <van-nav-bar :border="false" left-arrow @click-left="$router.back()"></van-nav-bar>
-    </van-sticky>
+
+    <van-nav-bar :border="false" left-arrow @click-left="$router.back()" fixed></van-nav-bar>
 
     <!-- /navbar -->
 
@@ -79,7 +79,6 @@ export default {
     }
   },
   created() {
-    
     this.getRecommendSongs()
   },
   computed: {
@@ -106,16 +105,19 @@ export default {
       }
     },
     play(song) {
-      
+
       if (this.verifySong(song.id)) {
+        this.showPlayer(true)
+        this.playCurrentSong(song)
         this.playAllSong(this.songList)
-        this.$router.push({ path: `/player/${song.id}`, query: {song} })
       }
 
     },
     ...mapMutations([
       'playAllSong',
-      'songsFormatter'
+      'songsFormatter',
+      'showPlayer',
+      'playCurrentSong'
     ]),
     ...mapActions([
       'verifySong'

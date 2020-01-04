@@ -1,8 +1,8 @@
 <template>
   <div class="find">
+    <stair height="46px"/>
     <!-- NavBar -->
-    <van-sticky>
-      <van-nav-bar left-arrow @click-left="onClickLeft" @click-right="onClickRight">
+      <van-nav-bar left-arrow @click-left="onClickLeft" @click-right="onClickRight" fixed :border="false">
         <van-icon name="ellipsis" slot="left" size="24px" />
         <van-search
           placeholder="请输入搜索关键词"
@@ -12,7 +12,6 @@
           class="nav-bar-search"
         />
       </van-nav-bar>
-    </van-sticky>
     <!-- /NavBar -->
 
     <van-pull-refresh

@@ -1,7 +1,18 @@
 <template>
   <div class="home">
-    <van-icon name="bar-chart-o" slot="right" size="24px" class="player-icon" @click="goToPlayer" />
-    <keep-alive exclude="player">
+    <van-icon
+      name="bar-chart-o"
+      slot="right"
+      size="24"
+      class="player-icon"
+      @click="showPlayer"
+      v-show="!isShowPlayer"
+    />
+
+    <player v-show="isShowPlayer" />
+
+
+    <keep-alive>
       <router-view />
     </keep-alive>
 
@@ -15,7 +26,11 @@
 </template>
 
 <script>
-
+import {
+  mapGetters,
+  mapMutations
+} from 'vuex'
+import Player from 'components/Player'
 export default {
   data() {
     return {
@@ -38,11 +53,22 @@ export default {
         break
     }
   },
-  methods: {
-    goToPlayer() {
-      this.$router.push({ name: 'player' })
-    }
+  computed: {
+    ...mapGetters([
+      'isShowPlayer'
+    ])
   },
+  methods: {
+    showPlayer() {
+      this.showPlayer(true)
+    },
+    ...mapMutations([
+      'showPlayer'
+    ])
+  },
+  components: {
+    Player
+  }
 }
 </script>
 
@@ -53,5 +79,4 @@ export default {
   right: 4vw;
   top: 3vw;
 }
-
 </style>

@@ -27,6 +27,7 @@ const beforeEnter = (to, from, next) => {
   }
 
 }
+
 const routes = [
   {
     path: '/',
@@ -97,11 +98,6 @@ const routes = [
         path: '/recommendsongs',
         name: 'recommendsongs',
         component: () => import('@/home/RecommendSongs.vue')
-      },
-      {
-        path: '/player/:id',
-        name: 'player',
-        component: () => import('@/Player')
       }
     ]
   },
