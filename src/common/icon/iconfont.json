@@ -1,0 +1,86 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "950815",
+      "name": "循环",
+      "font_class": "iconfontdanquxunhuan2eps",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "1381714",
+      "name": "随机",
+      "font_class": "suiji",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "1730205",
+      "name": "循环",
+      "font_class": "iconfontdanquxunhuan2eps1",
+      "unicode": "e502",
+      "unicode_decimal": 58626
+    },
+    {
+      "icon_id": "1984127",
+      "name": "播放",
+      "font_class": "bofang",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "2577464",
+      "name": "心",
+      "font_class": "xin-",
+      "unicode": "e503",
+      "unicode_decimal": 58627
+    },
+    {
+      "icon_id": "3366402",
+      "name": "暂停",
+      "font_class": "execute-",
+      "unicode": "e768",
+      "unicode_decimal": 59240
+    },
+    {
+      "icon_id": "3953501",
+      "name": "心",
+      "font_class": "03",
+      "unicode": "e501",
+      "unicode_decimal": 58625
+    },
+    {
+      "icon_id": "4100100",
+      "name": "xiao xi (1)",
+      "font_class": "xiaoxi",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "4547451",
+      "name": "下一首",
+      "font_class": "xiayishou",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "4712616",
+      "name": "gengduo",
+      "font_class": "gengduo",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "5182743",
+      "name": "列表",
+      "font_class": "liebiao",
+      "unicode": "e504",
+      "unicode_decimal": 58628
+    }
+  ]
+}

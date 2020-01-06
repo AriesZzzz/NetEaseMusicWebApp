@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import './common/scss/reset.scss'
+import 'common/scss/reset.scss'
+import 'common/icon/iconfont.css'
 import Cookie from 'vue-cookies'
 import Session from 'vue-session'
 // import fastclick from 'fastclick'
@@ -27,7 +28,8 @@ import {
   Sticky,
   PullRefresh,
   Notify,
-  ActionSheet
+  ActionSheet,
+  Progress
 } from 'vant'
 
 Vue.use(Cookie)
@@ -54,6 +56,7 @@ Vue.use(Button)
   .use(PullRefresh)
   .use(Notify)
   .use(ActionSheet)
+  .use(Progress)
 
 /* 解决手机浏览器 click 300ms延迟, 会使输入框双击才能聚焦 */
 

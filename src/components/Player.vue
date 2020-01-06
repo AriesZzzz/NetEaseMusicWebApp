@@ -1,5 +1,7 @@
 <template>
   <div class="player" @touchmove.prevent>
+    <div class="blur-wrapper"></div>
+    <div class="overlay" :style="{backgroundImage: `url(${blurPicUrl})`}"></div>
     <!-- navbar -->
     <van-nav-bar
       :title="songName"
@@ -14,10 +16,75 @@
     <span class="artists-name" @click="goToArtist">{{songArtists | artistsNameFormatter}} ></span>
     <!-- /navbar -->
 
-    <div class="container" :style="{backgroundImage: `url(${blurPicUrl})`}"></div>
-    <div class="rotateAlbumWrapper">
-      <van-image width="50vw" round :src="blurPicUrl" />
+    <div class="album-lyric-wrapper">
+      <div class="rotateAlbumWrapper">
+        <van-image width="50vw" round :src="blurPicUrl" />
+      </div>
     </div>
+
+    <footer class="player-controls">
+      <van-row class="progress">
+        <van-col span="2">
+          <span class="time">{{begin}}</span>
+        </van-col>
+        <van-col span="20">
+          <van-progress :percentage="50" stroke-width="3" />
+        </van-col>
+
+        <van-col span="2">
+          <span class="time">{{end}}</span>
+        </van-col>
+      </van-row>
+
+      <van-row type="flex" justify="space-around">
+        <!-- 播放模式 -->
+        <van-col span="3" class="controls">
+          <van-icon
+            class-prefix="icon"
+            name="iconfontdanquxunhuan2eps"
+            tag="span"
+            v-show="playMode === 'single'"
+          />
+          <van-icon class-prefix="icon" name="suiji" tag="span" v-show="playMode === 'shuffle'" />
+          <van-icon
+            class-prefix="icon"
+            name="iconfontdanquxunhuan2eps1"
+            tag="span"
+            v-show="playMode === 'circle'"
+          />
+        </van-col>
+        <!-- /播放模式 -->
+
+        <!-- 上一曲 -->
+        <van-col span="3" class="controls">
+          <van-icon
+            class-prefix="icon"
+            name="shangyishou"
+            tag="span"
+          />
+        </van-col>
+        <!-- /上一曲 -->
+
+        <!-- 播放/暂停 -->
+        <van-col span="6" class="play-and-pause controls">
+          <van-icon name="play-circle-o" v-show="!playing" @click="play" color="#eee" />
+
+          <van-icon name="pause-circle-o" v-show="playing" @click="pause" color="#eee" />
+        </van-col>
+        <!-- / 播放/暂停 -->
+
+        <!-- 下一曲 -->
+        <van-col span="3" class="controls">
+          <van-icon class-prefix="icon" name="xiayishou" tag="span" />
+        </van-col>
+        <!-- /下一曲 -->
+        <!-- 歌曲列表 -->
+        <van-col span="3" class="controls">
+          <van-icon class-prefix="icon" name="liebiao" tag="span" />
+        </van-col>
+        <!-- 歌曲列表 -->
+      </van-row>
+    </footer>
 
     <van-action-sheet
       v-model="showArtists"
@@ -31,8 +98,8 @@
       @select="onShareSelect"
       description="分享"
     />
-    <audio autoplay loop ref="audio">
-      <source type="audio/mpeg" />
+    <audio autoplay loop ref="audio" id="audio">
+      <source type="audio/mpeg" src />
     </audio>
   </div>
 </template>
@@ -54,7 +121,11 @@ export default {
         { name: '云音乐动态' },
         { name: '微信' },
         { name: 'QQ好友' }
-      ]
+      ],
+      begin: '00:00',
+      end: '05:20',
+      playing: true,
+      playMode: 'single'
     }
   },
   computed: {
@@ -78,10 +149,17 @@ export default {
   },
   methods: {
     play() {
+      this.playing = true
+      this.$refs.audio.play()
+    },
+    autoPlay() {
+      this.playing = true
+      // 使用计算属性渲染不能播放歌曲
       this.$refs.audio.src = this.songUrl
       this.$refs.audio.play()
     },
     pause() {
+      this.playing = false
       this.$refs.audio.pause()
     },
     share() {
@@ -108,7 +186,7 @@ export default {
   },
   watch: {
     songUrl(newVal, oldVal) {
-      this.play()
+      // this.autoPlay()
     }
   }
 }
@@ -116,19 +194,25 @@ export default {
 
 <style lang="scss" scoped>
 .player {
-  z-index: 999 !important;
+  z-index: 999;
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #fff;
 }
-.container {
+.blur-wrapper {
   width: 100vw;
   height: 100vh;
-  background-size: 200% 200%;
+  position: absolute;
+  background-color: #eee;
+}
+.overlay {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background-size: 300vw;
   background-repeat: no-repeat;
   background-position: center;
-  filter: blur(15px) opacity(55%) grayscale(27%);
+  filter: blur(7px) opacity(90%);
 }
 .van-nav-bar {
   background-color: transparent !important;
@@ -137,30 +221,55 @@ export default {
   display: inline-block;
   width: 50vw;
   font-size: 12px;
-  color: #666;
+  color: #eee;
   position: absolute;
   top: 34px;
   left: 50vw;
   margin-left: -25vw;
   text-align: center;
-  z-index: 1000;
+  z-index: 1;
+}
+.album-lyric-wrapper {
+  width: 100vw;
 }
 .rotateAlbumWrapper {
-  position: absolute;
-  top: 50vh;
-  margin-top: -40vw;
-  left: 50vw;
-  margin-left: -25vw;
+  width: 80vw;
+  height: 80vw;
+  box-sizing: border-box;
   border-radius: 50vw;
-  border: 6px solid #eee;
+  padding: 15vw;
+  margin: 15vh auto 0;
+  background: url("../assets/唱片.png") center center;
+  background-size: cover;
   animation: rotateAlbum 20s linear infinite;
 }
 @keyframes rotateAlbum {
   from {
-    transform: rotate(0deg)
+    transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg)
+    transform: rotate(360deg);
   }
+}
+.player-controls {
+  width: 100vw;
+  position: fixed;
+  bottom: 4vh;
+}
+.van-nav-bar__title {
+  color: #fff;
+}
+.play-and-pause {
+  > i {
+    font-size: 18vw;
+  }
+}
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.time {
+  font-size: 14px;
 }
 </style>
