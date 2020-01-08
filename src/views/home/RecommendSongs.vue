@@ -109,7 +109,11 @@ export default {
       if (this.verifySong(song.id)) {
         this.showPlayer(true)
         this.playCurrentSong(song)
-        this.playAllSong(this.songList)
+        // 播放列表中有值时，不执行 playAllSong
+        if (this.playList.length === 0) {
+          this.playAllSong(this.songList)
+        }
+
       }
 
     },

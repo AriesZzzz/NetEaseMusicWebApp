@@ -36,3 +36,6 @@ export const reqSong = (id) => request(BASE + '/song/url', { id })
 
 // 请求歌曲信息
 export const reqSongInfo = (ids) => request(BASE + '/song/detail', { ids })
+
+// 请求歌词
+export const reqLyric = (id) => request(BASE + '/lyric', { id })

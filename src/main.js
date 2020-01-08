@@ -29,7 +29,7 @@ import {
   PullRefresh,
   Notify,
   ActionSheet,
-  Progress
+  Slider
 } from 'vant'
 
 Vue.use(Cookie)
@@ -56,7 +56,7 @@ Vue.use(Button)
   .use(PullRefresh)
   .use(Notify)
   .use(ActionSheet)
-  .use(Progress)
+  .use(Slider)
 
 /* 解决手机浏览器 click 300ms延迟, 会使输入框双击才能聚焦 */
 
@@ -85,6 +85,23 @@ Vue.filter('artistsNameFormatter', artists => {
     tmp.push(artist.name)
   })
   return tmp.join('/')
+})
+// 格式化歌曲时长
+Vue.filter('timeFormatter', time => {
+    let parseTime = parseInt(time)
+    let minute = parseInt(parseTime / 60)
+    let sec = parseTime % 60 + ''
+    let isM0 = ':'
+    if (minute === 0) {
+      minute = '00'
+    } else if (minute < 10) {
+      minute = '0' + minute
+    }
+    if (sec.length === 1) {
+      sec = '0' + sec
+    }
+    return minute + isM0 + sec
+
 })
 
 new Vue({

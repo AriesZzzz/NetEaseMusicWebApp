@@ -14,5 +14,6 @@ npm run start
 ```
 npm run build
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- `transform`属性只对块级元素起作用
+- 组件中的计算属性会比vuex中的先执行
+- 组件生命周期
