@@ -205,6 +205,10 @@ export default {
   },
   methods: {
     async getLyric(id) {
+      if (this.currentLyric) {
+        this.currentLyric.stop()
+        this.currentLyric = null
+      }
       const result = await reqLyric(id)
       if (result.status === OK) {
         this.lyricStr = result.data.lrc.lyric
@@ -212,21 +216,23 @@ export default {
         this.createLyric()
 
       } else {
+        this.currentLyric = null
+        this.currentLineNum = 0
         this.$toast(result.statusText)
       }
     },
     createLyric() {
       this.currentLyric = new Lyric(this.lyricStr, this.lyricHanlder)
       if (this.playing) {
-          this.currentLyric.play()
-          // 歌词重载以后 高亮行设置为 0
-          this.currentLineNum = 0
-          this.$refs.lyricList.scrollTo(0, 0, 1000)
-        }
+        this.currentLyric.play()
+        // 歌词重载以后 高亮行设置为 0
+        this.currentLineNum = 0
+        this.$refs.lyricList.scrollTo(0, 0, 1000)
+      }
     },
     lyricHanlder({ lineNum, txt }) {
       this.currentLineNum = lineNum
-    
+
       if (lineNum > 5) {
         let lineEl = this.$refs.lyricLine[lineNum - 5]
         this.$refs.lyricList.scrollToElement(lineEl, 1000)
@@ -240,12 +246,17 @@ export default {
     },
     getProgressVal(value) {
       this.$refs.audio.currentTime = parseInt(value)
+      if (this.currentLyric) {
+        this.currentLyric.seek(this.$refs.audio.currentTime * 1000)
+      }
     },
     play() {
       this.albumAnimation = 'running'
       this.playing = true
       this.$refs.audio.play()
-
+      if (this.currentLyric) {
+        this.currentLyric.togglePlay()
+      }
     },
     autoPlay() {
       this.albumAnimation = 'running'
@@ -256,7 +267,9 @@ export default {
       this.albumAnimation = 'paused'
       this.playing = false
       this.$refs.audio.pause()
-
+      if (this.currentLyric) {
+        this.currentLyric.togglePlay()
+      }
     },
     share() {
       this.showShare = true
@@ -289,6 +302,8 @@ export default {
       }, 1000)
 
       this.getLyric(newVal.id)
+
+
     }
   },
   components: {
@@ -358,12 +373,12 @@ export default {
 }
 .text {
   line-height: 40px;
-  color: #eee;
+  color: rgba(220, 220, 220, 0.8);
   font-size: 14px;
   text-align: center;
   padding: 0 3vw;
   &.current {
-    color: red;
+    color: #fff;
   }
 }
 .rotateAlbumWrapper {
