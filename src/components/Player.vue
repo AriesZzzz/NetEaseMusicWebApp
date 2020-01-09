@@ -39,14 +39,15 @@
         :data="currentLyric && currentLyric.lines"
       >
         <div class="lyric-wrapper">
-          <div class="currentLyric" v-if="currentLyric">
+          <div class="current-lyric" v-if="currentLyric">
             <p
               ref="lyricLine"
               class="text"
               v-for="(line, index) in currentLyric.lines"
               :class="{'current': currentLineNum === index}"
               :key="index"
-            >{{line.txt}}</p>
+              v-html="line.txt"
+            ></p>
           </div>
           <p class="no-lyric" v-if="!currentLyric">{{upDatecurrentLyric}}</p>
         </div>
@@ -110,13 +111,17 @@
         <!-- /下一曲 -->
         <!-- 歌曲列表 -->
         <van-col span="3" class="controls">
-          <van-icon class-prefix="icon" name="liebiao" tag="span" />
+          <van-icon
+            class-prefix="icon"
+            name="liebiao"
+            tag="span"
+            @click="showPlayListMenu"
+          />
         </van-col>
         <!-- 歌曲列表 -->
       </van-row>
     </footer>
     <!-- / 播放控件 -->
-
     <!-- 上拉菜单 -->
     <van-action-sheet
       v-model="showArtists"
@@ -130,6 +135,30 @@
       @select="onShareSelect"
       description="分享"
     />
+    <van-popup
+      v-model="showPlayList"
+      round
+      closeable
+      close-icon="delete"
+      position="bottom"
+      :style="{ height: '60vh'}"
+      class="popup"
+    >
+   
+      <van-row type="flex" justify="center" class="collectAllSong">
+        <van-col span="12" class="controls">
+          <van-icon name="plus" v-show="playMode === 'single'" />收藏全部
+        </van-col>
+      </van-row>
+
+      <!-- 播放列表 -->
+      <play-list ref="playlist"/>
+      <!-- /播放列表 -->
+
+      <div class="bottom-close" @click="showPlayList = !showPlayList">
+          关闭
+      </div>
+    </van-popup>
     <!-- / 上拉菜单 -->
   </div>
 </template>
@@ -137,7 +166,8 @@
 <script>
 import {
   mapGetters,
-  mapMutations
+  mapMutations,
+  mapState
 } from 'vuex'
 import {
   SONGURL,
@@ -148,9 +178,11 @@ import {
 } from 'api'
 import Lyric from 'lyric-parser'
 import Scroll from 'components/Scroll'
+import PlayList from 'components/PlayList';
 export default {
   data() {
     return {
+      showPlayList: false,
       showArtists: false,
       showShare: false,
       shareData: [
@@ -159,7 +191,6 @@ export default {
         { name: 'QQ好友' }
       ],
       begin: 0, // 歌曲左边进度
-      playing: true, // 是否正在播放歌曲
       playMode: 'single', // 播放模式
       presetPic: '../assets/唱片.png', // 预设唱片，防止报错
       albumAnimation: 'running', // 动画暂停/继续
@@ -168,7 +199,9 @@ export default {
       lyricStr: '', // 歌词
       tLyricStr: '', // 翻译歌词
       currentLyric: null, // 歌词对象
-      currentLineNum: 0 // 歌词行数
+      currentTransLyric: null, // 翻译歌词对象
+      currentLineNum: 0, // 歌词行数
+      timer: 0
     }
   },
   updated() {
@@ -180,6 +213,9 @@ export default {
       'playList',
       'playingSong',
       'isShowPlayer'
+    ]),
+    ...mapState([
+      'playing'
     ]),
     songUrl() {
       return SONGURL(this.playingSong.id)
@@ -204,6 +240,15 @@ export default {
     },
   },
   methods: {
+    showPlayListMenu() {
+      this.showPlayList = !this.showPlayList
+      
+      setTimeout(() => {
+        // 调用子组件里的方法
+        this.$refs.playlist.scrollToCur()
+      })
+      
+    },
     async getLyric(id) {
       if (this.currentLyric) {
         this.currentLyric.stop()
@@ -223,6 +268,7 @@ export default {
     },
     createLyric() {
       this.currentLyric = new Lyric(this.lyricStr, this.lyricHanlder)
+      // this.currentTransLyric = new Lyric(this.tLyricStr)
       if (this.playing) {
         this.currentLyric.play()
         // 歌词重载以后 高亮行设置为 0
@@ -234,43 +280,53 @@ export default {
       this.currentLineNum = lineNum
 
       if (lineNum > 5) {
+        // 保证歌词在第5行后才开始滚动
         let lineEl = this.$refs.lyricLine[lineNum - 5]
         this.$refs.lyricList.scrollToElement(lineEl, 1000)
       } else {
         this.$refs.lyricList.scrollTo(0, 0, 1000)
       }
 
+
     },
     toggleAlbumLyric() {
       this.showAlbum = !this.showAlbum
     },
     getProgressVal(value) {
-      this.$refs.audio.currentTime = parseInt(value)
+      this.$refs.audio.currentTime = value
       if (this.currentLyric) {
         this.currentLyric.seek(this.$refs.audio.currentTime * 1000)
       }
     },
+    setTimer() {
+      this.timer = setInterval(() => {
+        this.begin = document.querySelector("#audioPlayer").currentTime
+      }, 1000)
+    },
     play() {
       this.albumAnimation = 'running'
-      this.playing = true
+      this.togglePlaying(true)
       this.$refs.audio.play()
       if (this.currentLyric) {
         this.currentLyric.togglePlay()
       }
-    },
-    autoPlay() {
-      this.albumAnimation = 'running'
-      this.playing = true
-      this.$refs.audio.play()
+      this.setTimer()
     },
     pause() {
       this.albumAnimation = 'paused'
-      this.playing = false
+      this.togglePlaying(false)
       this.$refs.audio.pause()
       if (this.currentLyric) {
         this.currentLyric.togglePlay()
       }
+      clearInterval(this.timer)
     },
+    autoPlay() {
+      this.albumAnimation = 'running'
+      this.togglePlaying(true)
+      this.$refs.audio.play()
+    },
+
     share() {
       this.showShare = true
     },
@@ -290,24 +346,22 @@ export default {
       this.showPlayer(false)
     },
     ...mapMutations([
-      'showPlayer'
+      'showPlayer',
+      'togglePlaying'
     ])
   },
   watch: {
     playingSong(newVal, oldVal) {
       this.autoPlay()
-      setInterval(() => {
-        // 待优化, 歌曲暂停后，begin 值不变，应该停止定时器
-        this.begin = document.querySelector("#audioPlayer").currentTime
-      }, 1000)
-
+      this.setTimer()
       this.getLyric(newVal.id)
 
 
     }
   },
   components: {
-    Scroll
+    Scroll,
+    PlayList
   }
 }
 </script>
@@ -425,5 +479,25 @@ export default {
   font-size: 12px;
   text-align: center;
   color: #eee;
+}
+.popup {
+  box-sizing: border-box;
+  padding: 4vw;
+  &::-webkit-scrollbar {
+    // 隐藏滚动条
+    width: 0 !important;
+  }
+}
+.bottom-close {
+  width: 92vw;
+  height: 7vh;
+  position: fixed;
+  bottom: 0;
+  background-color: #fff;
+  text-align: center;
+  line-height: 7vh;
+}
+.collectAllSong {
+  margin-bottom: 3vh;
 }
 </style>

@@ -62,7 +62,9 @@ export default new Vuex.Store({
     // 是否展示播放页面
     isShowPlayer: false,
     // 正在播放的歌曲
-    playingSong: {}
+    playingSong: {},
+    // 是否正在播放
+    playing: true
   },
   getters: {
     playList(state) {
@@ -99,6 +101,9 @@ export default new Vuex.Store({
     },
     playCurrentSong(state, song) {
       state.playingSong = song
+    },
+    togglePlaying(state, isPlaying) {
+      state.playing = isPlaying
     }
   },
   actions: {

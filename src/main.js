@@ -29,7 +29,8 @@ import {
   PullRefresh,
   Notify,
   ActionSheet,
-  Slider
+  Slider,
+  Popup
 } from 'vant'
 
 Vue.use(Cookie)
@@ -57,6 +58,7 @@ Vue.use(Button)
   .use(Notify)
   .use(ActionSheet)
   .use(Slider)
+  .use(Popup)
 
 /* 解决手机浏览器 click 300ms延迟, 会使输入框双击才能聚焦 */
 
