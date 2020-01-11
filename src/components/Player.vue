@@ -1,6 +1,6 @@
 <template>
   <div class="player" @touchmove.prevent>
-    <audio autoplay loop ref="audio" :src="songUrl" id="audioPlayer"></audio>
+    <audio autoplay ref="audio" :src="songUrl" id="audioPlayer"></audio>
     <!-- 防止player整体透明 -->
     <div class="blur-wrapper"></div>
     <!-- 模糊图片 -->
@@ -111,12 +111,7 @@
         <!-- /下一曲 -->
         <!-- 歌曲列表 -->
         <van-col span="3" class="controls">
-          <van-icon
-            class-prefix="icon"
-            name="liebiao"
-            tag="span"
-            @click="showPlayListMenu"
-          />
+          <van-icon class-prefix="icon" name="liebiao" tag="span" @click="showPlayListMenu" />
         </van-col>
         <!-- 歌曲列表 -->
       </van-row>
@@ -138,26 +133,28 @@
     <van-popup
       v-model="showPlayList"
       round
-      closeable
-      close-icon="delete"
       position="bottom"
-      :style="{ height: '60vh'}"
+      :style="{ height: '70vh'}"
       class="popup"
     >
-   
       <van-row type="flex" justify="center" class="collectAllSong">
-        <van-col span="12" class="controls">
+        <van-col span="11">
+          <span>当前播放({{playList.length}})</span>
+        </van-col>
+        <van-col span="11">
           <van-icon name="plus" v-show="playMode === 'single'" />收藏全部
+        </van-col>
+        <van-col span="2">
+          <!-- 清空播放列表 -->
+          <van-icon name="delete" @click="clearAllPlayList" />
         </van-col>
       </van-row>
 
       <!-- 播放列表 -->
-      <play-list ref="playlist"/>
+      <play-list ref="playlist" />
       <!-- /播放列表 -->
 
-      <div class="bottom-close" @click="showPlayList = !showPlayList">
-          关闭
-      </div>
+      <div class="bottom-close" @click="showPlayList = !showPlayList">关闭</div>
     </van-popup>
     <!-- / 上拉菜单 -->
   </div>
@@ -215,7 +212,8 @@ export default {
       'isShowPlayer'
     ]),
     ...mapState([
-      'playing'
+      'playing',
+
     ]),
     songUrl() {
       return SONGURL(this.playingSong.id)
@@ -240,14 +238,33 @@ export default {
     },
   },
   methods: {
+    ...mapMutations([
+      'showPlayer',
+      'togglePlaying',
+      'clearPlayList',
+      'showPlayer',
+      'clearPlayingSong'
+    ]),
+    clearAllPlayList() {
+      this.$dialog.confirm({
+        message: '确定清空播放列表？'
+      }).then(() => {
+        this.clearPlayList()
+        this.clearPlayingSong()
+        this.showPlayer(false)
+      }).catch(() => {
+
+      })
+    },
     showPlayListMenu() {
       this.showPlayList = !this.showPlayList
-      
-      setTimeout(() => {
-        // 调用子组件里的方法
+      this.$nextTick(() => {
+        // 调用子组件里的方法，打开播放列表能看到当前播放的歌曲
+        // 数组项变化之后需要重新调用refresh()
+        this.$refs.playlist.refresh()
         this.$refs.playlist.scrollToCur()
       })
-      
+
     },
     async getLyric(id) {
       if (this.currentLyric) {
@@ -345,18 +362,13 @@ export default {
     hidePlayer() {
       this.showPlayer(false)
     },
-    ...mapMutations([
-      'showPlayer',
-      'togglePlaying'
-    ])
+
   },
   watch: {
     playingSong(newVal, oldVal) {
       this.autoPlay()
       this.setTimer()
       this.getLyric(newVal.id)
-
-
     }
   },
   components: {

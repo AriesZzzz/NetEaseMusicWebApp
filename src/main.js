@@ -30,7 +30,8 @@ import {
   Notify,
   ActionSheet,
   Slider,
-  Popup
+  Popup,
+  Dialog
 } from 'vant'
 
 Vue.use(Cookie)
@@ -59,6 +60,7 @@ Vue.use(Button)
   .use(ActionSheet)
   .use(Slider)
   .use(Popup)
+  .use(Dialog)
 
 /* 解决手机浏览器 click 300ms延迟, 会使输入框双击才能聚焦 */
 

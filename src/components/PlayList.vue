@@ -1,23 +1,28 @@
 <template>
   <div class="play-list">
-    <!-- <scroll :data="playList" class="song-scroll"> -->
-    <div class="play-list-wrapper">
-      <van-row v-for="item in playList" :key="item.id" class="play-list-row">
-        <van-col span="22" class="play-list-col">
-          <p class="van-ellipsis play-items" :class="{'current-play': playingSong.id === item.id}">
-            <van-icon name="volume-o" v-show="playingSong.id === item.id" />
-            <span class="song-name">{{item.name}}</span>
-            -
-            <span class="artists-name">{{item.artists | artistsNameFormatter}}</span>
-          </p>
-        </van-col>
-        <van-col span="2">
-          <van-icon name="cross" />
-        </van-col>
-      </van-row>
-      <stair height="5vh" />
-    </div>
-    <!-- </scroll> -->
+    <scroll :data="playList" class="song-scroll" ref="playList">
+      <div class="play-list-wrapper">
+        <div class="current-playList">
+          <van-row v-for="item in playList" :key="item.id" class="play-list-row">
+            <van-col span="22" class="play-list-col">
+              <p
+                class="van-ellipsis play-items"
+                :class="{'current-play': playingSong.id === item.id}"
+                @click.stop="playCurrentSong(item)"
+              >
+                <van-icon name="volume-o" v-show="playingSong.id === item.id" />
+                <span class="song-name">{{item.name}}</span>
+               
+                <span class="artists-name"> - {{item.artists | artistsNameFormatter}}</span>
+              </p>
+            </van-col>
+            <van-col span="2">
+              <van-icon name="cross" @click.stop="deleteList(item.id)"/>
+            </van-col>
+          </van-row>
+        </div>
+      </div>
+    </scroll>
   </div>
 </template>
 
@@ -27,7 +32,7 @@ import {
   mapMutations,
   mapState
 } from 'vuex'
-// import Scroll from 'components/Scroll';
+import Scroll from 'components/Scroll';
 import Stair from 'components/Stair';
 export default {
   data() {
@@ -44,12 +49,26 @@ export default {
     ])
   },
   methods: {
+    ...mapMutations([
+      'playCurrentSong',
+      'deleteOneInPlayList',
+      'clearPlayList'
+    ]),
+    deleteList(id) {
+      this.$refs.playList.refresh()
+      this.deleteOneInPlayList(id)
+    },
     scrollToCur() {
-      document.querySelector(".current-play").scrollIntoView()
+        let current = document.querySelector(".current-play")
+        this.$refs.playList.scrollToElement(current, 1000)
+    },
+    refresh() {
+      this.$refs.playList.refresh()
     }
   },
   components: {
-    Stair
+    Stair,
+    Scroll
   }
 
 }
@@ -59,21 +78,24 @@ export default {
 @import "common/scss/variable.scss";
 .play-list-row {
   margin: 3vh 0;
+  border-bottom: 1px solid #eee;
+
 }
 .play-items {
   height: 4vh;
 }
 
-// .song-scroll {
-//   height: 53vh;
-//   overflow: hidden;
-// }
+.song-scroll {
+  width: 100%;
+  height: 55vh;
+  overflow: hidden;
+}
 .song-name {
   margin-left: 1vw;
 }
 .artists-name {
   color: #666;
-  font-size: 14px;
+  font-size: 12px;
 }
 .current-play {
   color: $main-color;

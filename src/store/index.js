@@ -42,7 +42,6 @@ const songs_formatter = (songs) => {
     tmpName = `${name}${transName ? `(${transName})` : ''}`
     artists.forEach(artist => {
       tmpArtists.push(new Artists(artist.name, artist.id))
-      
     })
     tmpSongItem = new Song(tmpName, id, tmpArtists, tmpAlbum)
     tmpSongs.push(tmpSongItem)
@@ -64,7 +63,7 @@ export default new Vuex.Store({
     // 正在播放的歌曲
     playingSong: {},
     // 是否正在播放
-    playing: true
+    playing: true,
   },
   getters: {
     playList(state) {
@@ -78,6 +77,9 @@ export default new Vuex.Store({
     },
     playingSong(state) {
       return state.playingSong
+    },
+    showPlayList(state) {
+      return state.showPlayList
     }
   },
   mutations: {
@@ -104,6 +106,20 @@ export default new Vuex.Store({
     },
     togglePlaying(state, isPlaying) {
       state.playing = isPlaying
+    },
+    deleteOneInPlayList(state, SongId) {
+      let deleteIndex = state.playList.findIndex(song => {
+        return song.id === SongId
+      })
+      if (deleteIndex !== -1) {
+        state.playList.splice(deleteIndex, 1)
+      }
+    },
+    clearPlayList(state) {
+      state.playList.length = 0
+    },
+    clearPlayingSong(state) {
+      state.playingSong = {}
     }
   },
   actions: {
