@@ -99,7 +99,7 @@ export default {
       const result = await reqRecommendSongs()
       if (result.status === OK) {
         this.songsFormatter(result.data.recommend)
-        this.songList = this.newSongs
+        this.songList = JSON.parse(JSON.stringify(this.newSongs)) // 深拷贝数组，避免操作playList时改变newSongs
       } else {
         Toast(result.statusText)
       }

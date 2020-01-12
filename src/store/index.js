@@ -52,18 +52,14 @@ const songs_formatter = (songs) => {
 
 export default new Vuex.Store({
   state: {
-    // 用户 token
-    userToken: '',
-    // 播放列表
-    playList: [],
-    // 格式化后的歌曲
-    newSongs: [],
-    // 是否展示播放页面
-    isShowPlayer: false,
-    // 正在播放的歌曲
-    playingSong: {},
-    // 是否正在播放
-    playing: true,
+    userToken: '',  // 用户 token
+    playList: [], // 播放列表
+    newSongs: [], // 格式化后的歌曲
+    isShowPlayer: false, // 是否展示播放页面
+    playingSong: {}, // 正在播放的歌曲
+    playing: true, // 是否正在播放
+    songIndex: 0, // 歌曲在播放列表中的索引
+    playMode: 'circle', // 播放模式
   },
   getters: {
     playList(state) {
@@ -90,7 +86,7 @@ export default new Vuex.Store({
       state.userToken = initToken
     },
     playAllSong(state, songList) {
-      state.playList = songList
+      state.playList = JSON.parse(JSON.stringify(songList))
     },
     playSingleSong(state, song) {
       state.playList.push(song)
@@ -107,19 +103,19 @@ export default new Vuex.Store({
     togglePlaying(state, isPlaying) {
       state.playing = isPlaying
     },
-    deleteOneInPlayList(state, SongId) {
-      let deleteIndex = state.playList.findIndex(song => {
-        return song.id === SongId
+    findSongIndexById(state, songId) {
+      state.songIndex = state.playList.findIndex(song => {
+        return song.id === songId
       })
-      if (deleteIndex !== -1) {
-        state.playList.splice(deleteIndex, 1)
-      }
     },
     clearPlayList(state) {
       state.playList.length = 0
     },
     clearPlayingSong(state) {
       state.playingSong = {}
+    },
+    togglePlayMode(state, playMode) {
+      state.playMode = playMode
     }
   },
   actions: {
@@ -142,6 +138,33 @@ export default new Vuex.Store({
       } else {
         Toast(message)
         return success
+      }
+    },
+    deleteOneInPlayList({ state, commit }, songId) {
+      commit('findSongIndexById', songId)
+      if (state.songIndex !== -1) {
+        state.playList.splice(state.songIndex, 1)
+      }
+    },
+    togglePrevOrNext({ state, commit }, prevOrNext) {
+      if (prevOrNext === 'prev') {
+        // 上一曲
+        commit('findSongIndexById', state.playingSong.id)
+        if (state.songIndex === 0) {
+          // 如果当前歌曲是第一首
+          commit('playCurrentSong', state.playList[state.playList.length - 1])
+        } else {
+          commit('playCurrentSong', state.playList[state.songIndex - 1])
+        }
+      } else {
+        // 下一曲
+        commit('findSongIndexById', state.playingSong.id)
+        if (state.songIndex === state.playList.length - 1) {
+          // 如果当前歌曲是最后一首
+          commit('playCurrentSong', state.playList[0])
+        } else {
+          commit('playCurrentSong', state.playList[state.songIndex + 1])
+        }
       }
     }
   },

@@ -73,7 +73,7 @@
 
       <van-row type="flex" justify="space-around">
         <!-- 播放模式 -->
-        <van-col span="3" class="controls">
+        <van-col span="3" class="controls" @click="changePlayMode">
           <van-icon
             class-prefix="icon"
             name="iconfontdanquxunhuan2eps"
@@ -92,7 +92,12 @@
 
         <!-- 上一曲 -->
         <van-col span="3" class="controls">
-          <van-icon class-prefix="icon" name="shangyishou" tag="span" />
+          <van-icon
+            class-prefix="icon"
+            name="shangyishou"
+            tag="span"
+            @click="togglePrevOrNext('prev')"
+          />
         </van-col>
         <!-- /上一曲 -->
 
@@ -106,7 +111,12 @@
 
         <!-- 下一曲 -->
         <van-col span="3" class="controls">
-          <van-icon class-prefix="icon" name="xiayishou" tag="span" />
+          <van-icon
+            class-prefix="icon"
+            name="xiayishou"
+            tag="span"
+            @click="togglePrevOrNext('next')"
+          />
         </van-col>
         <!-- /下一曲 -->
         <!-- 歌曲列表 -->
@@ -138,11 +148,11 @@
       class="popup"
     >
       <van-row type="flex" justify="center" class="collectAllSong">
-        <van-col span="11">
+        <van-col span="9">
           <span>当前播放({{playList.length}})</span>
         </van-col>
-        <van-col span="11">
-          <van-icon name="plus" v-show="playMode === 'single'" />收藏全部
+        <van-col span="13">
+          <van-icon name="plus" />收藏全部
         </van-col>
         <van-col span="2">
           <!-- 清空播放列表 -->
@@ -164,7 +174,8 @@
 import {
   mapGetters,
   mapMutations,
-  mapState
+  mapState,
+  mapActions
 } from 'vuex'
 import {
   SONGURL,
@@ -188,7 +199,6 @@ export default {
         { name: 'QQ好友' }
       ],
       begin: 0, // 歌曲左边进度
-      playMode: 'single', // 播放模式
       presetPic: '../assets/唱片.png', // 预设唱片，防止报错
       albumAnimation: 'running', // 动画暂停/继续
       duration: 0, // 歌曲总时长
@@ -198,7 +208,8 @@ export default {
       currentLyric: null, // 歌词对象
       currentTransLyric: null, // 翻译歌词对象
       currentLineNum: 0, // 歌词行数
-      timer: 0
+      timer: 0,
+      random: 0
     }
   },
   updated() {
@@ -213,7 +224,8 @@ export default {
     ]),
     ...mapState([
       'playing',
-
+      'songIndex',
+      'playMode'
     ]),
     songUrl() {
       return SONGURL(this.playingSong.id)
@@ -243,8 +255,23 @@ export default {
       'togglePlaying',
       'clearPlayList',
       'showPlayer',
-      'clearPlayingSong'
+      'clearPlayingSong',
+      'findSongIndexById',
+      'playCurrentSong',
+      'togglePlayMode'
     ]),
+    ...mapActions([
+      'togglePrevOrNext'
+    ]),
+    changePlayMode() {
+      if (this.playMode === 'circle') {
+        this.togglePlayMode('single')
+      } else if (this.playMode === 'single') {
+        this.togglePlayMode('shuffle')
+      } else {
+        this.togglePlayMode('circle')
+      }
+    },
     clearAllPlayList() {
       this.$dialog.confirm({
         message: '确定清空播放列表？'
@@ -343,7 +370,6 @@ export default {
       this.togglePlaying(true)
       this.$refs.audio.play()
     },
-
     share() {
       this.showShare = true
     },
@@ -362,13 +388,37 @@ export default {
     hidePlayer() {
       this.showPlayer(false)
     },
-
+    getRandom(max) {
+      return Math.floor(Math.random().toFixed(2) * max)
+    }
   },
   watch: {
     playingSong(newVal, oldVal) {
       this.autoPlay()
       this.setTimer()
-      this.getLyric(newVal.id)
+      if (newVal.id) {
+        this.getLyric(newVal.id)
+      }
+    },
+    begin(newVal, oldVal) {
+      if (parseInt(newVal) === parseInt(this.duration)) {
+        this.togglePlaying(false)
+        switch (this.playMode) {
+          case 'circle':
+            this.togglePrevOrNext('next')
+            break
+          case 'single':
+            this.autoPlay()
+            this.$refs.lyricList.scrollTo(0, 0, 1000)
+            this.currentLyric.seek(0)
+            this.currentLineNum = 0
+            break
+          case 'shuffle':
+            this.random = this.getRandom(this.playList.length)
+            this.playCurrentSong(this.playList[this.random])
+            break
+        }
+      }
     }
   },
   components: {
@@ -436,6 +486,9 @@ export default {
   height: 95%;
   z-index: 1;
   overflow: hidden;
+}
+.no-lyric {
+  text-align: center;
 }
 .text {
   line-height: 40px;

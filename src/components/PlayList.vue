@@ -12,12 +12,12 @@
               >
                 <van-icon name="volume-o" v-show="playingSong.id === item.id" />
                 <span class="song-name">{{item.name}}</span>
-               
-                <span class="artists-name"> - {{item.artists | artistsNameFormatter}}</span>
+
+                <span class="artists-name">- {{item.artists | artistsNameFormatter}}</span>
               </p>
             </van-col>
             <van-col span="2">
-              <van-icon name="cross" @click.stop="deleteList(item.id)"/>
+              <van-icon name="cross" @click.stop="deleteList(item.id)" />
             </van-col>
           </van-row>
         </div>
@@ -30,7 +30,8 @@
 import {
   mapGetters,
   mapMutations,
-  mapState
+  mapState,
+  mapActions
 } from 'vuex'
 import Scroll from 'components/Scroll';
 import Stair from 'components/Stair';
@@ -51,19 +52,33 @@ export default {
   methods: {
     ...mapMutations([
       'playCurrentSong',
-      'deleteOneInPlayList',
       'clearPlayList'
     ]),
+    ...mapActions([
+      'deleteOneInPlayList',
+      'togglePrevOrNext'
+    ]),
     deleteList(id) {
+      if (id === this.playingSong.id) {
+        this.togglePrevOrNext('next')
+      }
       this.$refs.playList.refresh()
       this.deleteOneInPlayList(id)
     },
     scrollToCur() {
-        let current = document.querySelector(".current-play")
-        this.$refs.playList.scrollToElement(current, 1000)
+      let current = document.querySelector(".current-play")
+      this.$refs.playList.scrollToElement(current, 1000)
     },
     refresh() {
       this.$refs.playList.refresh()
+    }
+  },
+  watch: {
+    playingSong(newVal, OldVal) {
+      this.$nextTick(() => {
+        this.scrollToCur()
+      })
+
     }
   },
   components: {
@@ -78,8 +93,8 @@ export default {
 @import "common/scss/variable.scss";
 .play-list-row {
   margin: 3vh 0;
+  line-height: 2vh;
   border-bottom: 1px solid #eee;
-
 }
 .play-items {
   height: 4vh;
