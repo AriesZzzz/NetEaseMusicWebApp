@@ -52,18 +52,25 @@ export default {
   methods: {
     ...mapMutations([
       'playCurrentSong',
-      'clearPlayList'
+      'clearPlayList',
+      'clearPlayingSong',
+      'showPlayer',
+      'deleteOneInPlayList'
     ]),
     ...mapActions([
-      'deleteOneInPlayList',
       'togglePrevOrNext'
     ]),
     deleteList(id) {
-      if (id === this.playingSong.id) {
+      if (id === this.playingSong.id ) {
+        if (this.playList.length === 1) {
+          this.clearPlayingSong()
+          this.showPlayer(false)
+          this.$emit('reset-currentLyric')
+        }
         this.togglePrevOrNext('next')
       }
-      this.$refs.playList.refresh()
       this.deleteOneInPlayList(id)
+      this.$refs.playList.refresh()
     },
     scrollToCur() {
       let current = document.querySelector(".current-play")
@@ -93,7 +100,7 @@ export default {
 @import "common/scss/variable.scss";
 .play-list-row {
   margin: 3vh 0;
-  line-height: 2vh;
+  line-height: 3vh;
   border-bottom: 1px solid #eee;
 }
 .play-items {

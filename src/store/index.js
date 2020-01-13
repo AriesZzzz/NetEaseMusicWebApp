@@ -49,6 +49,18 @@ const songs_formatter = (songs) => {
   })
   return tmpSongs
 }
+// 优化随机算法
+const getRandomSong = (playList, max) => {
+  let tmpPlayList = playList.slice(0) // 浅拷贝
+  tmpPlayList.sort(() => (0.5 - Math.random().toFixed(2)))
+  return tmpPlayList[Math.floor(Math.random().toFixed(2) * max)]
+}
+
+const findSongIndexById = (playList, songId) => {
+  return playList.findIndex(song => {
+    return song.id === songId
+  })
+}
 
 export default new Vuex.Store({
   state: {
@@ -58,8 +70,9 @@ export default new Vuex.Store({
     isShowPlayer: false, // 是否展示播放页面
     playingSong: {}, // 正在播放的歌曲
     playing: true, // 是否正在播放
-    songIndex: 0, // 歌曲在播放列表中的索引
     playMode: 'circle', // 播放模式
+    randomSong: {}, // 随机歌曲,
+    songIndex: 0 //
   },
   getters: {
     playList(state) {
@@ -103,11 +116,7 @@ export default new Vuex.Store({
     togglePlaying(state, isPlaying) {
       state.playing = isPlaying
     },
-    findSongIndexById(state, songId) {
-      state.songIndex = state.playList.findIndex(song => {
-        return song.id === songId
-      })
-    },
+    
     clearPlayList(state) {
       state.playList.length = 0
     },
@@ -116,7 +125,13 @@ export default new Vuex.Store({
     },
     togglePlayMode(state, playMode) {
       state.playMode = playMode
-    }
+    },
+    deleteOneInPlayList(state, songId) {
+      state.songIndex = findSongIndexById(state.playList, songId)
+      if (state.songIndex !== -1) {
+        state.playList.splice(state.songIndex, 1)
+      }
+    },
   },
   actions: {
     /* 
@@ -140,16 +155,21 @@ export default new Vuex.Store({
         return success
       }
     },
-    deleteOneInPlayList({ state, commit }, songId) {
-      commit('findSongIndexById', songId)
-      if (state.songIndex !== -1) {
-        state.playList.splice(state.songIndex, 1)
+  
+    playShuffle({ state, commit, dispatch }) {
+      // 使用递归，避免连续两次随机数一样
+      let tmpRandomSong = getRandomSong(state.playList, state.playList.length)
+      if (tmpRandomSong.id === state.randomSong.id) {
+        dispatch('playShuffle')
+        return
       }
+      state.randomSong = tmpRandomSong
+      commit('playCurrentSong', state.randomSong )
     },
-    togglePrevOrNext({ state, commit }, prevOrNext) {
+    togglePrevOrNext({ state, commit, dispatch }, prevOrNext) {
       if (prevOrNext === 'prev') {
         // 上一曲
-        commit('findSongIndexById', state.playingSong.id)
+        state.songIndex = findSongIndexById(state.playList, state.playingSong.id)
         if (state.songIndex === 0) {
           // 如果当前歌曲是第一首
           commit('playCurrentSong', state.playList[state.playList.length - 1])
@@ -158,7 +178,12 @@ export default new Vuex.Store({
         }
       } else {
         // 下一曲
-        commit('findSongIndexById', state.playingSong.id)
+        // 如果是随机播放，则直接播放，不用考虑边界情况
+        if (state.playMode === 'shuffle') {
+          dispatch('playShuffle')
+          return
+        }
+        state.songIndex = findSongIndexById(state.playList, state.playingSong.id)
         if (state.songIndex === state.playList.length - 1) {
           // 如果当前歌曲是最后一首
           commit('playCurrentSong', state.playList[0])

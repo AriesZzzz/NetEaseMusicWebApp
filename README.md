@@ -58,3 +58,17 @@ play() 函数调用后，歌词好像不会滚动
        bindToWrapper: true
      })
 ```
+
+### Vue devtools 数据不同步
+devtools 中显示的 `playList`长度 与 代码中的数组长度不一致。
+表现为：点击删除一首歌时，代码中`playList.length`减 1 ，但devtools中的`playList`没有同步刷新，在删除第2首歌后，devtools中`playList`长度才会减1，但永远比代码中的长度多 1.也就是说devtools中显示的是上一次的长度
+
+在随意切换一下别的任何状态(暂停，播放，切歌)后，devtools 中显示就跟代码中同步了
+
+思考：
+- 我用删除方法是 `action` 方法，会不会有异步的问题，没有同步刷新？
+- 但我并没有异步请求，写的是同步代码
+
+解决：
+- 就是`action` 方法的原因，我将删除函数改为了`mutation`方法，devtools就同步显示了
+- 以后真不敢随便乱用`action`了，我以为它就只是为了让我能自由调用其他方法，结果还给我强行异步

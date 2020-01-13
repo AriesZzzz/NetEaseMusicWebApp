@@ -161,7 +161,7 @@
       </van-row>
 
       <!-- 播放列表 -->
-      <play-list ref="playlist" />
+      <play-list ref="playlist" @reset-currentLyric="resetCurrentLyric" @pause="pause"/>
       <!-- /播放列表 -->
 
       <div class="bottom-close" @click="showPlayList = !showPlayList">关闭</div>
@@ -256,12 +256,13 @@ export default {
       'clearPlayList',
       'showPlayer',
       'clearPlayingSong',
-      'findSongIndexById',
       'playCurrentSong',
-      'togglePlayMode'
+      'togglePlayMode',
+      'getRandom'
     ]),
     ...mapActions([
-      'togglePrevOrNext'
+      'togglePrevOrNext',
+      'playShuffle'
     ]),
     changePlayMode() {
       if (this.playMode === 'circle') {
@@ -279,6 +280,7 @@ export default {
         this.clearPlayList()
         this.clearPlayingSong()
         this.showPlayer(false)
+        this.resetCurrentLyric()
       }).catch(() => {
 
       })
@@ -293,10 +295,14 @@ export default {
       })
 
     },
+    resetCurrentLyric() {
+      // playList 子组件需要调用这个方法来将歌词置空
+      this.currentLyric = null
+    },
     async getLyric(id) {
       if (this.currentLyric) {
         this.currentLyric.stop()
-        this.currentLyric = null
+        this.resetCurrentLyric()
       }
       const result = await reqLyric(id)
       if (result.status === OK) {
@@ -305,7 +311,7 @@ export default {
         this.createLyric()
 
       } else {
-        this.currentLyric = null
+        this.resetCurrentLyric()
         this.currentLineNum = 0
         this.$toast(result.statusText)
       }
@@ -387,9 +393,6 @@ export default {
     },
     hidePlayer() {
       this.showPlayer(false)
-    },
-    getRandom(max) {
-      return Math.floor(Math.random().toFixed(2) * max)
     }
   },
   watch: {
@@ -414,8 +417,7 @@ export default {
             this.currentLineNum = 0
             break
           case 'shuffle':
-            this.random = this.getRandom(this.playList.length)
-            this.playCurrentSong(this.playList[this.random])
+            this.playShuffle()
             break
         }
       }
@@ -483,7 +485,7 @@ export default {
 }
 .lyric {
   width: 100%;
-  height: 95%;
+  height: 68vh;
   z-index: 1;
   overflow: hidden;
 }
@@ -564,5 +566,9 @@ export default {
 }
 .collectAllSong {
   margin-bottom: 3vh;
+}
+.van-slider__button {
+  width: 12px !important;
+  height: 12px !important;
 }
 </style>
