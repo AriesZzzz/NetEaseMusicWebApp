@@ -72,7 +72,8 @@ export default new Vuex.Store({
     playing: true, // 是否正在播放
     playMode: 'circle', // 播放模式
     randomSong: {}, // 随机歌曲,
-    songIndex: 0 //
+    songIndex: 0 , // 歌曲索引
+    songComments: {} // 歌曲评论
   },
   getters: {
     playList(state) {
@@ -132,6 +133,9 @@ export default new Vuex.Store({
         state.playList.splice(state.songIndex, 1)
       }
     },
+    setSongComments(state, comments) {
+      state.songComments = comments
+    }
   },
   actions: {
     /* 

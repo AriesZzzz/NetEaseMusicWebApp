@@ -1,25 +1,23 @@
 <template>
   <div class="find">
-    <stair height="46px"/>
+    <stair height="46px" />
     <!-- NavBar -->
-      <van-nav-bar left-arrow @click-left="onClickLeft" @click-right="onClickRight" fixed :border="false">
-        <van-icon name="ellipsis" slot="left" size="24px" />
-        <van-search
-          placeholder="请输入搜索关键词"
-          slot="title"
-          shape="round"
-          @focus="goToSearch"
-          class="nav-bar-search"
-        />
-      </van-nav-bar>
+    <van-nav-bar
+      @click-right="onClickRight"
+      fixed
+      :border="false"
+    >
+      <van-search
+        placeholder="请输入搜索关键词"
+        slot="title"
+        shape="round"
+        @focus="goToSearch"
+        class="nav-bar-search"
+      />
+    </van-nav-bar>
     <!-- /NavBar -->
 
-    <van-pull-refresh
-      v-model="isLoading"
-      @refresh="onRefresh"
-      success-text="刷新成功"
-      loading-text="玩命加载中..."
-    >
+    <scroll class="scroll-container" :data="albums">
       <div class="container">
         <!-- Swipe -->
         <van-row type="flex" justify="center">
@@ -106,9 +104,7 @@
         </div>
         <!-- /最新专辑-->
       </div>
-    </van-pull-refresh>
-    <!-- 避免底部导航栏挡住内容 -->
-    <stair />
+    </scroll>
   </div>
 </template>
 
@@ -124,9 +120,11 @@ import {
 import ImgBox from 'components/ImgBox'
 import AlbumsBox from 'components/AlbumsBox'
 import Stair from 'components/Stair'
+import Scroll from 'components/Scroll'
+
 import {
   Toast
-} from 'vant';
+} from 'vant'
 export default {
   data() {
     return {
@@ -171,10 +169,6 @@ export default {
     goToSearch() {
       this.$router.push({ name: 'search' })
     },
-    onClickLeft() {
-      console.log('返回')
-
-    },
     onClickRight() {
       console.log('右边')
     },
@@ -202,7 +196,8 @@ export default {
   components: {
     ImgBox,
     AlbumsBox,
-    Stair
+    Stair,
+    Scroll
   }
 }
 </script>
@@ -240,5 +235,10 @@ export default {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+.scroll-container {
+  width: 100%;
+  height: 85vh;
+  overflow: hidden;
 }
 </style>

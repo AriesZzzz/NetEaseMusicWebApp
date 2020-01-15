@@ -8,50 +8,51 @@
     <!-- /navbar -->
 
     <!-- 歌曲列表 -->
-    <div class="container">
-      <van-row
-        type="flex"
-        class="song-row"
-        justify="center"
-        v-for="item in songList"
-        :key="item.id"
-        @click="play(item)"
-      >
-        <van-col span="22">
-          <van-swipe-cell :stop-propagation="false">
-            <div class="wrapper">
-              <van-image
-                width="50"
-                height="50"
-                lazy-load
-                :src="item.album.picUrl"
-                fit="cover"
-                radius="5px"
-              />
-              <div class="song-list-wrapper">
-                <p class="van-ellipsis song-name">{{item.name}}</p>
-                <p
-                  class="van-ellipsis artists-name"
-                >{{item.artists | artistsNameFormatter}} - {{item.album.name}}</p>
+    <scroll class="scroll-container" :data="songList">
+      <div class="container">
+        <van-row
+          type="flex"
+          class="song-row"
+          justify="center"
+          v-for="item in songList"
+          :key="item.id"
+          @click="play(item)"
+        >
+          <van-col span="22">
+            <van-swipe-cell :stop-propagation="false">
+              <div class="wrapper">
+                <van-image
+                  width="50"
+                  height="50"
+                  lazy-load
+                  :src="item.album.picUrl"
+                  fit="cover"
+                  radius="5px"
+                />
+                <div class="song-list-wrapper">
+                  <p class="van-ellipsis song-name">{{item.name}}</p>
+                  <p
+                    class="van-ellipsis artists-name"
+                  >{{item.artists | artistsNameFormatter}} - {{item.album.name}}</p>
+                </div>
+                <van-icon name="ellipsis" class="ellipsis" />
               </div>
-              <van-icon name="ellipsis" class="ellipsis" />
-            </div>
-            <template slot="right">
-              <van-button
-                type="danger"
-                color="#E35454"
-                text="不感兴趣"
-                style="border: 1px solid #fff;"
-              />
-              <van-button type="primary" text="收藏" style="border: 1px #fff;" />
-            </template>
-          </van-swipe-cell>
-        </van-col>
-      </van-row>
+              <template slot="right">
+                <van-button
+                  type="danger"
+                  color="#E35454"
+                  text="不感兴趣"
+                  style="border: 1px solid #fff;"
+                />
+                <van-button type="primary" text="收藏" style="border: 1px #fff;" />
+              </template>
+            </van-swipe-cell>
+          </van-col>
+        </van-row>
 
-      <!-- /歌曲列表 -->
-    </div>
-    <stair />
+        <!-- /歌曲列表 -->
+      </div>
+    </scroll>
   </div>
 </template>
 
@@ -63,12 +64,13 @@ import {
   OK
 } from 'common/constant'
 import Stair from 'components/Stair'
+import Scroll from 'components/Scroll'
 import {
   mapGetters,
   mapMutations,
   mapActions
 } from 'vuex';
-import { Toast } from 'vant';
+import { Toast } from 'vant'
 
 export default {
   data() {
@@ -124,7 +126,8 @@ export default {
     ])
   },
   components: {
-    Stair
+    Stair,
+    Scroll
   }
 }
 </script>
@@ -159,5 +162,10 @@ export default {
 }
 .song-row {
   margin-bottom: 2vh;
+}
+.scroll-container {
+  width: 100%;
+  height: 85vh;
+  overflow: hidden;
 }
 </style>

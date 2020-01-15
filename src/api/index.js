@@ -39,3 +39,9 @@ export const reqSongInfo = (ids) => request(BASE + '/song/detail', { ids })
 
 // 请求歌词
 export const reqLyric = (id) => request(BASE + '/lyric', { id })
+
+// 请求歌曲评论
+export const reqSongComments = (id) => request(BASE + '/comment/music', { id })
+
+// 喜欢歌曲/取消喜欢
+export const reqIsLikeSong = (id, isLike) => request(BASE + '/like', {id, like: isLike})

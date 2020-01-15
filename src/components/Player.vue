@@ -31,6 +31,21 @@
       >
         <van-image width="50vw" round :src="blurPicUrl" />
       </div>
+      <van-row class="play-info" v-show="showAlbum">
+        <van-col span="6" @click.stop="setLikeSong">
+          <van-icon class-prefix="icon" name="03" v-show="!isLike" />
+          <van-icon class-prefix="icon" name="xin-" v-show="isLike" />
+        </van-col>
+        <van-col span="6">
+          <van-icon name="label-o" />
+        </van-col>
+        <van-col span="6">
+          <van-icon name="chat-o" :info="commentsCount" @click.stop="goToSongComments" />
+        </van-col>
+        <van-col span="6">
+          <van-icon name="ellipsis" @click.stop="getSongInfo" />
+        </van-col>
+      </van-row>
       <!-- 滚动歌词 -->
       <scroll
         class="lyric"
@@ -43,6 +58,7 @@
             <p
               ref="lyricLine"
               class="text"
+              :style="{lineHeight: lyricLineHeight}"
               v-for="(line, index) in currentLyric.lines"
               :class="{'current': currentLineNum === index}"
               :key="index"
@@ -161,11 +177,19 @@
       </van-row>
 
       <!-- 播放列表 -->
-      <play-list ref="playlist" @reset-currentLyric="resetCurrentLyric" @pause="pause"/>
+      <play-list ref="playlist" @reset-currentLyric="resetCurrentLyric" @pause="pause" />
       <!-- /播放列表 -->
 
       <div class="bottom-close" @click="showPlayList = !showPlayList">关闭</div>
     </van-popup>
+    <!-- 歌曲信息展示 -->
+    <van-action-sheet
+      v-model="showSongInfo"
+      :actions="infoActions"
+      @select="onInfoSelect"
+      cancel-text="取消"
+    />
+    <!-- / 歌曲信息展示 -->
     <!-- / 上拉菜单 -->
   </div>
 </template>
@@ -182,14 +206,18 @@ import {
   OK
 } from 'common/constant'
 import {
-  reqLyric
+  reqLyric,
+  reqSongComments,
+  reqIsLikeSong
 } from 'api'
 import Lyric from 'lyric-parser'
 import Scroll from 'components/Scroll'
-import PlayList from 'components/PlayList';
+import PlayList from 'components/PlayList'
 export default {
   data() {
     return {
+      showSongInfo: false,
+      isLike: false,
       showPlayList: false,
       showArtists: false,
       showShare: false,
@@ -209,7 +237,8 @@ export default {
       currentTransLyric: null, // 翻译歌词对象
       currentLineNum: 0, // 歌词行数
       timer: 0,
-      random: 0
+      random: 0,
+      lyricLineHeight: '40px'
     }
   },
   updated() {
@@ -225,7 +254,8 @@ export default {
     ...mapState([
       'playing',
       'songIndex',
-      'playMode'
+      'playMode',
+      'songComments'
     ]),
     songUrl() {
       return SONGURL(this.playingSong.id)
@@ -248,6 +278,18 @@ export default {
         return '歌词加载中'
       }
     },
+    commentsCount() {
+      let total = this.songComments.total
+      if (total <= 999) return total
+      if (total > 999 && total <= 10000) return '999+'
+      if (total > 10000 && total <= 100000) return '1w+'
+      if (total > 100000) return '10w+'
+    },
+    infoActions() {
+      return [
+        { name: `专辑: ${this.playingSong.album.name}` }
+      ]
+    }
   },
   methods: {
     ...mapMutations([
@@ -258,12 +300,49 @@ export default {
       'clearPlayingSong',
       'playCurrentSong',
       'togglePlayMode',
-      'getRandom'
+      'getRandom',
+      'setSongComments'
     ]),
     ...mapActions([
       'togglePrevOrNext',
       'playShuffle'
     ]),
+    async setLikeSong() {
+      if (this.isLike) {
+        const result = await reqIsLikeSong(this.playingSong.id, false)
+        if (result.status === OK) {
+          this.playingSong.isLike = false
+          this.isLike = false
+        } else {
+          this.$toast(result.statusText)
+        }
+      } else {
+        const result = await reqIsLikeSong(this.playingSong.id)
+        if (result.status === OK) {
+          this.playingSong.isLike = true
+          this.isLike = true
+        } else {
+          this.$toast(result.statusText)
+        }
+      }
+    },
+    goToSongComments() {
+      console.log('gotocomments');
+    },
+    async getSongComments(id) {
+      const result = await reqSongComments(id)
+      if (result.status === OK) {
+        this.setSongComments(result.data)
+      } else {
+        this.$toast(result.statusText)
+      }
+    },
+    onInfoSelect(item) {
+
+    },
+    getSongInfo() {
+      this.showSongInfo = true
+    },
     changePlayMode() {
       if (this.playMode === 'circle') {
         this.togglePlayMode('single')
@@ -279,8 +358,8 @@ export default {
       }).then(() => {
         this.clearPlayList()
         this.clearPlayingSong()
-        this.showPlayer(false)
         this.resetCurrentLyric()
+        this.showPlayer(false)
       }).catch(() => {
 
       })
@@ -318,7 +397,19 @@ export default {
     },
     createLyric() {
       this.currentLyric = new Lyric(this.lyricStr, this.lyricHanlder)
-      // this.currentTransLyric = new Lyric(this.tLyricStr)
+
+      if (this.tLyricStr) {
+        this.lyricLineHeight = '25px'
+        this.currentTransLyric = new Lyric(this.tLyricStr)
+        for (let i = 0; i < this.currentTransLyric.lines.length; i++) {
+          this.currentLyric.lines[i].txt += `<br>${this.currentTransLyric.lines[i].txt}`
+        }
+
+      } else {
+        // 根据有无翻译歌词来调整行高
+        this.lyricLineHeight = '40px'
+      }
+
       if (this.playing) {
         this.currentLyric.play()
         // 歌词重载以后 高亮行设置为 0
@@ -329,9 +420,9 @@ export default {
     lyricHanlder({ lineNum, txt }) {
       this.currentLineNum = lineNum
 
-      if (lineNum > 5) {
-        // 保证歌词在第5行后才开始滚动
-        let lineEl = this.$refs.lyricLine[lineNum - 5]
+      if (lineNum > 4) {
+        // 保证歌词在第4行后才开始滚动
+        let lineEl = this.$refs.lyricLine[lineNum - 4]
         this.$refs.lyricList.scrollToElement(lineEl, 1000)
       } else {
         this.$refs.lyricList.scrollTo(0, 0, 1000)
@@ -401,6 +492,8 @@ export default {
       this.setTimer()
       if (newVal.id) {
         this.getLyric(newVal.id)
+        this.getSongComments(newVal.id)
+        this.isLike = newVal.isLike
       }
     },
     begin(newVal, oldVal) {
@@ -480,8 +573,8 @@ export default {
   height: 70vh;
   display: flex;
   justify-content: center;
-  align-items: center;
   margin: 10vh auto 0;
+  position: relative;
 }
 .lyric {
   width: 100%;
@@ -493,7 +586,6 @@ export default {
   text-align: center;
 }
 .text {
-  line-height: 40px;
   color: rgba(220, 220, 220, 0.8);
   font-size: 14px;
   text-align: center;
@@ -502,9 +594,25 @@ export default {
     color: #fff;
   }
 }
+.play-info {
+  width: 92vw;
+  position: absolute;
+  bottom: 0;
+  > .van-info {
+    background-color: transparent !important;
+  }
+  > div {
+    text-align: center;
+  }
+  i {
+    color: #fff;
+    font-size: 8vw;
+  }
+}
 .rotateAlbumWrapper {
   width: 80vw;
   height: 80vw;
+  margin-top: 5vh;
   box-sizing: border-box;
   border-radius: 50vw;
   padding: 15vw;

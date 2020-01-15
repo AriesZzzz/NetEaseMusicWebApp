@@ -61,14 +61,18 @@ export default {
       'togglePrevOrNext'
     ]),
     deleteList(id) {
-      if (id === this.playingSong.id ) {
+      if (id === this.playingSong.id) {
         if (this.playList.length === 1) {
+          this.$emit('reset-currentLyric')
           this.clearPlayingSong()
           this.showPlayer(false)
-          this.$emit('reset-currentLyric')
+          
         }
+        
         this.togglePrevOrNext('next')
       }
+
+
       this.deleteOneInPlayList(id)
       this.$refs.playList.refresh()
     },

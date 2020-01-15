@@ -48,7 +48,7 @@ export default {
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
         click: this.click,
-        bindToWrapper: true 
+        bindToWrapper: true // 解决未来元素滚动
       })
 
       if (this.listenScroll) {
