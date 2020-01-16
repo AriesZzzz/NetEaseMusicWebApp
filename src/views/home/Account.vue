@@ -16,6 +16,9 @@ import {
   Toast,
   Loading
 } from 'vant'
+import {
+  mapMutations
+} from 'vuex'
 export default {
   data() {
     return {
@@ -23,12 +26,16 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'removeUserInfo'
+    ]),
     async logout() {
       this.loading = true
       const result = await reqLogout()
       this.loading = false
       if (result.data.code === OK) {
         Toast('退出登录')
+        this.removeUserInfo()
         this.$session.remove('token')
         this.$router.replace({name: 'find'})
       }

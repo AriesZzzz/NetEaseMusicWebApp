@@ -42,17 +42,19 @@ export default {
   methods: {
     async login() {
       const result = await verifyPassword(this.$route.query.phone, this.password)
-      const {code, token, message} = result.data
+      const {code, token, message, account} = result.data
       if (code === OK) {
         this.$session.set('token', token)
-        this.getToken(token)
+        this.setToken(token)
+        this.setUid(account.id)
         this.$router.replace({name: 'find'})
       } else {
         Toast(message)
       }
     },
     ...mapMutations([
-      'getToken'
+      'setToken',
+      'setUid'
     ])
   }
 }

@@ -63,10 +63,10 @@ export default {
     deleteList(id) {
       if (id === this.playingSong.id) {
         if (this.playList.length === 1) {
-          this.$emit('reset-currentLyric')
-          this.clearPlayingSong()
-          this.showPlayer(false)
-          
+          // 当删除列表最后一个时，重置所有选项
+          this.deleteOneInPlayList(id)
+          this.$emit('reset-all-options') 
+          return
         }
         
         this.togglePrevOrNext('next')

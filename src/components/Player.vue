@@ -37,7 +37,7 @@
           <van-icon class-prefix="icon" name="xin-" v-show="isLike" />
         </van-col>
         <van-col span="6">
-          <van-icon name="label-o" />
+          <van-icon name="star-o" />
         </van-col>
         <van-col span="6">
           <van-icon name="chat-o" :info="commentsCount" @click.stop="goToSongComments" />
@@ -177,7 +177,7 @@
       </van-row>
 
       <!-- 播放列表 -->
-      <play-list ref="playlist" @reset-currentLyric="resetCurrentLyric" @pause="pause" />
+      <play-list ref="playlist" @reset-all-options="resetAllOptions" @pause="pause" />
       <!-- /播放列表 -->
 
       <div class="bottom-close" @click="showPlayList = !showPlayList">关闭</div>
@@ -301,7 +301,8 @@ export default {
       'playCurrentSong',
       'togglePlayMode',
       'getRandom',
-      'setSongComments'
+      'setSongComments',
+      'clearSongComments'
     ]),
     ...mapActions([
       'togglePrevOrNext',
@@ -356,10 +357,7 @@ export default {
       this.$dialog.confirm({
         message: '确定清空播放列表？'
       }).then(() => {
-        this.clearPlayList()
-        this.clearPlayingSong()
-        this.resetCurrentLyric()
-        this.showPlayer(false)
+        this.resetAllOptions()
       }).catch(() => {
 
       })
@@ -376,7 +374,21 @@ export default {
     },
     resetCurrentLyric() {
       // playList 子组件需要调用这个方法来将歌词置空
+      this.currentLyric.stop()
       this.currentLyric = null
+    },
+    resetAllOptions() {
+      this.clearPlayList()
+      this.clearPlayingSong()
+      this.resetCurrentLyric()
+      this.currentTransLyric = null
+      this.lyricStr = ''
+      this.$refs.audio.src = ""
+      this.showPlayer(false)
+      this.currentLineNum = 0
+      this.clearSongComments()
+      this.togglePlaying(false)
+      clearInterval(this.timer)
     },
     async getLyric(id) {
       if (this.currentLyric) {
@@ -427,8 +439,6 @@ export default {
       } else {
         this.$refs.lyricList.scrollTo(0, 0, 1000)
       }
-
-
     },
     toggleAlbumLyric() {
       this.showAlbum = !this.showAlbum

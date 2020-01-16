@@ -64,7 +64,9 @@ const findSongIndexById = (playList, songId) => {
 
 export default new Vuex.Store({
   state: {
+    userInfo: {}, // 用户信息
     userToken: '',  // 用户 token
+    uid: '', // 用户 ID
     playList: [], // 播放列表
     newSongs: [], // 格式化后的歌曲
     isShowPlayer: false, // 是否展示播放页面
@@ -93,8 +95,18 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    getToken(state, token) {
+    setUserInfo(state, userInfo) {
+      state.userInfo = userInfo
+    },
+    removeUserInfo(state) {
+      state.userToken = ''
+      state.uid = ''
+    },
+    setToken(state, token) {
       state.userToken = token
+    },
+    setUid(state, uid) {
+      state.uid = uid
     },
     initToken(state, initToken) {
       state.userToken = initToken
@@ -122,7 +134,23 @@ export default new Vuex.Store({
       state.playList.length = 0
     },
     clearPlayingSong(state) {
-      state.playingSong = {}
+      state.playingSong = {
+        name: '',
+        id: '',
+        artists: [
+          {
+            name: '',
+            id: ''
+          }
+        ],
+        album: {
+          name: '',
+          id: '',
+          blurPicUrl: '',
+          picUrl: '',
+          publishTime: ''
+        }
+      }
     },
     togglePlayMode(state, playMode) {
       state.playMode = playMode
@@ -135,6 +163,9 @@ export default new Vuex.Store({
     },
     setSongComments(state, comments) {
       state.songComments = comments
+    },
+    clearSongComments(state) {
+      state.songComments = {}
     }
   },
   actions: {

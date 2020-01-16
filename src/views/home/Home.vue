@@ -6,7 +6,7 @@
       size="24"
       class="player-icon"
       @click="showPlayer"
-      v-show="!isShowPlayer && !isPlayingSongEmpty"
+      v-show="!isShowPlayer && !isPlayingListEmpty"
     />
 
     <player v-show="isShowPlayer" />
@@ -56,10 +56,10 @@ export default {
   computed: {
     ...mapGetters([
       'isShowPlayer',
-      'playingSong'
+      'playList'
     ]),
-    isPlayingSongEmpty() {
-      return Object.keys(this.playingSong).length === 0
+    isPlayingListEmpty() {
+      return this.playList.length === 0
     }
   },
   methods: {
