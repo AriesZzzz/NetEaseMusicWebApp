@@ -70,7 +70,23 @@ export default new Vuex.Store({
     playList: [], // 播放列表
     newSongs: [], // 格式化后的歌曲
     isShowPlayer: false, // 是否展示播放页面
-    playingSong: {}, // 正在播放的歌曲
+    playingSong: {
+      name: '',
+      id: '',
+      artists: [
+        {
+          name: '',
+          id: ''
+        }
+      ],
+      album: {
+        name: '',
+        id: '',
+        blurPicUrl: '',
+        picUrl: '',
+        publishTime: ''
+      }
+    }, // 正在播放的歌曲
     playing: true, // 是否正在播放
     playMode: 'circle', // 播放模式
     randomSong: {}, // 随机歌曲,
@@ -107,9 +123,6 @@ export default new Vuex.Store({
     },
     setUid(state, uid) {
       state.uid = uid
-    },
-    initToken(state, initToken) {
-      state.userToken = initToken
     },
     playAllSong(state, songList) {
       state.playList = JSON.parse(JSON.stringify(songList))

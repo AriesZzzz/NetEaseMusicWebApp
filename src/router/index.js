@@ -77,28 +77,38 @@ const routes = [
       {
         path: '/my',
         name: 'my',
-        component: () => import('@/home/My.vue')
+        component: () => import('@/home/My')
       },
       {
         path: '/cloudvlg',
         name: 'cloudvlg',
-        component: () => import('@/home/Cloudvlg.vue')
+        component: () => import('@/home/Cloudvlg')
       },
       {
         path: '/account',
         name: 'account',
-        component: () => import('@/home/Account.vue')
+        component: () => import('@/home/Account')
       },
       {
         path: '/search',
         name: 'search',
-        component: () => import('@/home/Search.vue')
+        component: () => import('@/home/Search')
       },
       {
         path: '/recommendsongs',
         name: 'recommendsongs',
-        component: () => import('@/home/RecommendSongs.vue')
-      }
+        component: () => import('@/home/RecommendSongs')
+      },
+      {
+        path: '/likemusic',
+        name: 'likemusic',
+        component: () => import('@/home/LikeMusic')
+      },
+      {
+        path: '/recentplay',
+        name: 'recentplay',
+        component: () => import('@/home/RecentPlay')
+      },
     ]
   },
   {

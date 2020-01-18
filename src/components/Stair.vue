@@ -1,5 +1,5 @@
 <template>
-  <div class="stair" :style="{height}"></div>
+  <div class="stair" :style="{width: '100%', height}"></div>
 </template>
 
 <script>

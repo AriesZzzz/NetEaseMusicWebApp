@@ -11,6 +11,7 @@ import {
   Button,
   NavBar,
   Icon,
+  Tab, Tabs,
   Tabbar, TabbarItem,
   Search,
   Toast,
@@ -31,7 +32,8 @@ import {
   ActionSheet,
   Slider,
   Popup,
-  Dialog
+  Dialog,
+  CellGroup
 } from 'vant'
 
 Vue.use(Cookie)
@@ -40,6 +42,7 @@ Vue.use(Session)
 Vue.use(Button)
   .use(NavBar)
   .use(Icon)
+  .use(Tab).use(Tabs)
   .use(Tabbar).use(TabbarItem)
   .use(Search)
   .use(Toast)
@@ -53,7 +56,7 @@ Vue.use(Button)
   .use(Divider)
   .use(PasswordInput)
   .use(Loading)
-  .use(Cell).use(List).use(SwipeCell)
+  .use(Cell).use(CellGroup).use(List).use(SwipeCell)
   .use(Sticky)
   .use(PullRefresh)
   .use(Notify)

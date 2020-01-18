@@ -231,7 +231,6 @@ export default {
 .resource-wrapper {
   width: 92vw;
   margin: 0 auto;
-  display: -webkit-flex; /* Safari */
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

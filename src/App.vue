@@ -10,11 +10,16 @@ import {
 export default {
   created() {
     const token = this.$session.get('token')
-    if (token) this.initToken(token)
+    const uid = this.$session.get('uid')
+    if (token && uid) {
+      this.setToken(token)
+      this.setUid(uid)
+    }
   },
   methods: {
     ...mapMutations([
-      'initToken'
+      'setToken',
+      'setUid'
     ])
   }
 }

@@ -159,6 +159,7 @@
     <van-popup
       v-model="showPlayList"
       round
+      close-on-popstate 
       position="bottom"
       :style="{ height: '70vh'}"
       class="popup"
@@ -346,10 +347,13 @@ export default {
     },
     changePlayMode() {
       if (this.playMode === 'circle') {
+        this.$toast('单曲循环')
         this.togglePlayMode('single')
       } else if (this.playMode === 'single') {
+        this.$toast('随机播放')
         this.togglePlayMode('shuffle')
       } else {
+        this.$toast('列表循环')
         this.togglePlayMode('circle')
       }
     },

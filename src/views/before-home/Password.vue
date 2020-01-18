@@ -45,6 +45,7 @@ export default {
       const {code, token, message, account} = result.data
       if (code === OK) {
         this.$session.set('token', token)
+        this.$session.set('uid', account.id)
         this.setToken(token)
         this.setUid(account.id)
         this.$router.replace({name: 'find'})

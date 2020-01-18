@@ -44,7 +44,10 @@ export const reqLyric = (id) => request(BASE + '/lyric', { id })
 export const reqSongComments = (id) => request(BASE + '/comment/music', { id })
 
 // 喜欢歌曲/取消喜欢
-export const reqIsLikeSong = (id, isLike) => request(BASE + '/like', {id, like: isLike})
+export const reqIsLikeSong = (id, isLike) => request(BASE + '/like', { id, like: isLike })
 
 // 请求用户详情
 export const reqUserInfo = (uid) => request(BASE + '/user/detail', { uid })
+
+// 请求用户歌单
+export const reqCreateList = (uid) => request(BASE + '/user/playlist', { uid })
