@@ -46,8 +46,18 @@ export const reqSongComments = (id) => request(BASE + '/comment/music', { id })
 // 喜欢歌曲/取消喜欢
 export const reqIsLikeSong = (id, isLike) => request(BASE + '/like', { id, like: isLike })
 
+// 获取喜欢列表
+export const reqLikeList = (uid) => request(BASE + '/likelist', { uid })
+
 // 请求用户详情
 export const reqUserInfo = (uid) => request(BASE + '/user/detail', { uid })
 
 // 请求用户歌单
 export const reqCreateList = (uid) => request(BASE + '/user/playlist', { uid })
+
+// 新建歌单
+export const reqCreateNewList = (name) => request(BASE + '/playlist/create', { name })
+
+// 获取歌单详情
+export const reqPlayListDetail = (id) => request(BASE + '/playlist/detail', { id })
+

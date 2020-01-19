@@ -100,9 +100,9 @@ const routes = [
         component: () => import('@/home/RecommendSongs')
       },
       {
-        path: '/likemusic',
-        name: 'likemusic',
-        component: () => import('@/home/LikeMusic')
+        path: '/songlist/:id',
+        name: 'songlist',
+        component: () => import('@/home/SongList')
       },
       {
         path: '/recentplay',

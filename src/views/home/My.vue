@@ -1,46 +1,51 @@
 <template>
   <div class="my">
     <van-nav-bar title="我的" :border="false" />
-    <van-cell-group title="我的音乐">
-      <van-cell title="我喜欢的音乐" icon="like-o" is-link :to="{name: 'likemusic'}" />
-      <van-cell title="最近播放" icon="service-o" is-link :to="{name: 'recentplay'}" />
-    </van-cell-group>
+    <scroll class="scroll-container" :data="createSongList">
+      <div class="container">
+        <van-cell-group title="我的音乐">
+          <van-cell title="我喜欢的音乐" icon="like-o" is-link :to="{name: 'songlist', params: { id: 'like_list'}}" />
+          <van-cell title="最近播放" icon="service-o" is-link :to="{name: 'recentplay'}" />
+        </van-cell-group>
 
-    <van-row type="flex" justify="center">
-      <van-col span="22">
-        <van-tabs v-model="activeName" sticky animated swipeable>
-          <van-tab :title="createCount" name="createlist">
-            <div class="song-list-wrapper">
-              <!-- <scroll class="scroll-container" :data="createSongList"> -->
-              <!-- <div class="song-list-items-wrapper"> -->
-              <song-list-items
-                v-for="(item, index) in createSongList"
-                :key="index"
-                :img="item.coverImgUrl"
-                :title="item.name"
-                :count="item.trackCount"
-              />
-              <song-list-items title="新建歌单" :showNewList="true" @show-actions="showNewListActions" />
-              <stair />
-              <!-- </div> -->
-              <!-- </scroll> -->
-            </div>
-          </van-tab>
-          <van-tab :title="collectCount" name="collectlist">
-            <div class="song-list-wrapper">
-              <song-list-items
-                v-for="(item, index) in collectSongList"
-                :key="index"
-                :img="item.coverImgUrl"
-                :title="item.name"
-                :count="item.trackCount"
-              />
-              <stair />
-            </div>
-          </van-tab>
-        </van-tabs>
-      </van-col>
-    </van-row>
+        <van-row type="flex" justify="center">
+          <van-col span="22">
+            <van-tabs v-model="activeName" animated swipeable>
+              <van-tab :title="createCount" name="createlist">
+                <div class="song-list-wrapper">
+                  <song-list-items
+                    v-for="(item, index) in createSongList"
+                    :key="index"
+                    :img="item.coverImgUrl"
+                    :title="item.name"
+                    :count="item.trackCount"
+                  />
+                  <song-list-items
+                    title="新建歌单"
+                    :showNewList="true"
+                    @show-actions="showNewListActions"
+                  />
+                </div>
+              </van-tab>
+              <van-tab :title="collectCount" name="collectlist">
+                <div class="song-list-wrapper">
+                  <song-list-items
+                    v-for="(item, index) in collectSongList"
+                    :key="index"
+                    :img="item.coverImgUrl"
+                    :title="item.name"
+                    :count="item.trackCount"
+                  />
+                  <stair />
+                </div>
+              </van-tab>
+            </van-tabs>
+          </van-col>
+        </van-row>
+        <!-- <stair /> -->
+      </div>
+    </scroll>
+
     <van-action-sheet
       v-model="showCreateList"
       :actions="actions"
@@ -58,7 +63,12 @@
       :style="{ height: '20vh' }"
     >
       <p class="popup-title">新建歌单</p>
-      <van-icon name="success" class="success-input" :style="{color: isOKColor}"/>
+      <van-icon
+        name="success"
+        class="success-input"
+        :style="{color: isOKColor}"
+        @click="createNewList"
+      />
       <van-cell-group class="group">
         <van-field v-model="songListTitle" placeholder="歌曲标题" />
       </van-cell-group>
@@ -68,7 +78,8 @@
 <script>
 import {
   reqUserInfo,
-  reqCreateList
+  reqCreateList,
+  reqCreateNewList
 } from 'api'
 import {
   mapState, mapMutations
@@ -96,7 +107,7 @@ export default {
           name: '切换至单列模式'
         }
       ],
-      showInputListName: true,
+      showInputListName: false,
       showCreateList: false,
       activeName: 'createlist',
       createSongList: [],
@@ -122,6 +133,25 @@ export default {
     ...mapMutations([
       'setUserInfo'
     ]),
+    async createNewList() {
+      if (this.isOKColor === '#000') {
+        const loading = this.$toast.loading({
+          message: '创建中...',
+          forbidClick: true
+        })
+        const result = await reqCreateNewList(this.songListTitle)
+        loading.clear()
+        if (result.status === OK) {
+          this.$toast('创建歌单成功')
+          this.showInputListName = false
+          this.createSongList.unshift(result.data.playlist)
+          this.songListTitle = ''
+        } else {
+          this.$toast(result.statusText)
+        }
+      }
+
+    },
     onSelect(item) {
       switch (item.name) {
         case '新建歌单':
@@ -167,7 +197,7 @@ export default {
   },
   components: {
     SongListItems,
-    scroll,
+    Scroll,
     Stair
   }
 }
@@ -183,7 +213,7 @@ export default {
 }
 .scroll-container {
   width: 100%;
-  height: 50vh;
+  height: 85vh;
   overflow: hidden;
 }
 .popup-title {
