@@ -37,7 +37,9 @@ const songs_formatter = (songs) => {
   let tmpAlbum = {}
   let tmpName = ''
   songs.forEach(song => {
-    let { name, id, artists, album, transName } = song
+    let { name, id, transName } = song
+    let artists = song.artists || song.ar
+    let album = song.album || song.al
     tmpAlbum = new Album(album.name, album.id, album.blurPicUrl, album.picUrl, album.publishTime)
     tmpName = `${name}${transName ? `(${transName})` : ''}`
     artists.forEach(artist => {
@@ -91,7 +93,9 @@ export default new Vuex.Store({
     playMode: 'circle', // 播放模式
     randomSong: {}, // 随机歌曲,
     songIndex: 0 , // 歌曲索引
-    songComments: {} // 歌曲评论
+    songComments: {}, // 歌曲评论
+    likeIds: [], //喜欢列表Id,
+    isShowTabBar: true
   },
   getters: {
     playList(state) {
@@ -111,6 +115,12 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    toggleTabBar(state, isShowTabBar) {
+      state.isShowTabBar = isShowTabBar
+    },
+    setLikeListIds(state, ids) {
+      state.likeIds = ids
+    },
     setUserInfo(state, userInfo) {
       state.userInfo = userInfo
     },

@@ -143,6 +143,7 @@ export default {
   position: absolute;
   right: 1.5vw;
   transform: rotate(90deg);
+  margin-top: 2.5vh;
 }
 .song-list-wrapper {
   width: 60vw;
@@ -152,9 +153,6 @@ export default {
   font-size: 12px;
   line-height: 27px;
   color: #666;
-}
-.ellipsis {
-  margin-top: 2.5vh;
 }
 .song-name {
   margin-top: 1vh;

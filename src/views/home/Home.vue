@@ -16,7 +16,7 @@
       <router-view />
     </keep-alive>
 
-    <van-tabbar v-model="active">
+    <van-tabbar v-model="active" v-show="isShowTabBar">
       <van-tabbar-item icon="home-o" replace to="/find">发现</van-tabbar-item>
       <van-tabbar-item icon="music-o" replace to="/my">我的</van-tabbar-item>
       <van-tabbar-item icon="friends-o" info="5" replace to="/cloudvlg">云村</van-tabbar-item>
@@ -28,7 +28,8 @@
 <script>
 import {
   mapGetters,
-  mapMutations
+  mapMutations,
+  mapState
 } from 'vuex'
 import Player from 'components/Player'
 export default {
@@ -54,6 +55,9 @@ export default {
     }
   },
   computed: {
+    ...mapState([
+      'isShowTabBar'
+    ]),
     ...mapGetters([
       'isShowPlayer',
       'playList'
