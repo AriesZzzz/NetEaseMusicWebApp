@@ -33,8 +33,10 @@
       </div>
       <van-row class="play-info" v-show="showAlbum">
         <van-col span="6" @click.stop="setLikeSong">
-          <van-icon class-prefix="icon" name="03" v-show="!isLike" />
-          <van-icon class-prefix="icon" name="xin-" v-show="isLike" />
+          <!-- 喜欢 -->
+          <van-icon class-prefix="icon" name="03" v-if="!isLike" />
+          <!-- 不喜欢 -->
+          <van-icon class-prefix="icon" name="xin-" v-else />
         </van-col>
         <van-col span="6">
           <van-icon name="star-o" />
@@ -159,7 +161,7 @@
     <van-popup
       v-model="showPlayList"
       round
-      close-on-popstate 
+      close-on-popstate
       position="bottom"
       :style="{ height: '70vh'}"
       class="popup"
@@ -218,7 +220,6 @@ export default {
   data() {
     return {
       showSongInfo: false,
-      isLike: false,
       showPlayList: false,
       showArtists: false,
       showShare: false,
@@ -256,7 +257,8 @@ export default {
       'playing',
       'songIndex',
       'playMode',
-      'songComments'
+      'songComments',
+      'likeIds'
     ]),
     songUrl() {
       return SONGURL(this.playingSong.id)
@@ -269,7 +271,7 @@ export default {
     },
     blurPicUrl() {
       let album = this.playingSong.album
-      return album ? album.blurPicUrl : this.presetPic
+      return album ? (album.blurPicUrl || album.picUrl) : this.presetPic
     },
     upDatecurrentLyric() {
       if (this.lyricStr) {
@@ -290,6 +292,19 @@ export default {
       return [
         { name: `专辑: ${this.playingSong.album.name}` }
       ]
+    },
+    isLike() {
+      const isLikeSong = () => {
+        return this.likeIds.findIndex((id) => {
+          return this.playingSong.id === id
+        })
+      }
+      if (isLikeSong() > 0) {
+        return true
+      } else {
+        return false
+      }
+        
     }
   },
   methods: {
@@ -303,30 +318,27 @@ export default {
       'togglePlayMode',
       'getRandom',
       'setSongComments',
-      'clearSongComments'
+      'clearSongComments',
+      'changeLikeIds',
     ]),
     ...mapActions([
       'togglePrevOrNext',
       'playShuffle'
     ]),
-    async setLikeSong() {
+    toggleIsLike() {
       if (this.isLike) {
-        const result = await reqIsLikeSong(this.playingSong.id, false)
-        if (result.status === OK) {
-          this.playingSong.isLike = false
-          this.isLike = false
-        } else {
-          this.$toast(result.statusText)
-        }
+        setLikeSong(false)
       } else {
-        const result = await reqIsLikeSong(this.playingSong.id)
+        setLikeSong(true)
+      }
+    },
+    async setLikeSong(reqLikeOrDisLike) {
+        const result = await reqIsLikeSong(this.playingSong.id, reqLikeOrDisLike)
         if (result.status === OK) {
-          this.playingSong.isLike = true
-          this.isLike = true
+          this.changeLikeIds(this.playingSong.id)
         } else {
           this.$toast(result.statusText)
         }
-      }
     },
     goToSongComments() {
       console.log('gotocomments');

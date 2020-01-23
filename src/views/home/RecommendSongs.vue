@@ -38,13 +38,7 @@
                 <van-icon name="ellipsis" class="ellipsis" />
               </div>
               <template slot="right">
-                <van-button
-                  type="danger"
-                  color="#E35454"
-                  text="不感兴趣"
-                  style="border: 1px solid #fff;"
-                />
-                <van-button type="primary" text="收藏" style="border: 1px #fff;" />
+                <van-button type="primary" text="收藏"/>
               </template>
             </van-swipe-cell>
           </van-col>

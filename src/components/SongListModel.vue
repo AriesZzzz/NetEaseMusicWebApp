@@ -3,12 +3,13 @@
     <van-row type="flex" justify="center" class="song-row">
       <van-col span="22">
         <van-swipe-cell :stop-propagation="true">
-          <div class="wrapper">
-            <div class="song-index">
-              <span>{{index}}</span>
+          <div class="wrapper" :style="{color: uselessColor}">
+            <div class="song-index" :style="{color}">
+              <span v-if="playingSong.id === id"><van-icon name="volume-o" /></span>
+              <span v-else>{{index}}</span>
               </div>
             <div class="song-list-wrapper">
-              <p class="van-ellipsis song-name">{{songName}}</p>
+              <p class="van-ellipsis song-name" :style="{color}">{{songName}}</p>
               <p
                 class="van-ellipsis artists-name"
               >{{artists | artistsNameFormatter}} - {{album.name}}</p>
@@ -25,8 +26,16 @@
 </template>
 
 <script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 export default {
   props: {
+    id: {
+      type: Number,
+      default: 0
+    },
     index: {
       type: Number,
       default: 1
@@ -54,8 +63,23 @@ export default {
         }
       }
     }
-
-  }
+  },
+  computed: {
+    ...mapGetters([
+      'playingSong'
+    ]),
+    color() {
+      return (this.playingSong.id === this.id) ? '#E35454' : ''
+    },
+    uselessColor() {
+      return (this.verifySong(this.id)) ? '' : '#eee'
+    }
+  },
+  methods: {
+    ...mapActions([
+      'verifySong'
+    ]),
+  },
 }
 </script>
 

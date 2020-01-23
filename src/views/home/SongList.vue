@@ -41,10 +41,12 @@
           <song-list-model
             v-for="(item, index) in songList"
             :key="item.id"
+            :id="item.id"
             :index="index + 1"
             :songName="item.name"
             :artists="item.artists"
             :album="item.album"
+            @click.native="play(item)"
           />
         </div>
       </div>
@@ -60,7 +62,9 @@ import {
 } from 'api'
 import {
   mapState,
-  mapMutations
+  mapMutations,
+  mapGetters,
+  mapActions
 } from 'vuex'
 import {
   OK
@@ -92,11 +96,21 @@ export default {
       return this.$route.params.id === 'like_list' ? '我喜欢的音乐' : this.songListTitle
     }
   },
+  created() {
+    this.getLikeList()
+    this.getCreatorInfo()
+  },
   methods: {
     ...mapMutations([
       'setLikeListIds',
       'songsFormatter',
-      'toggleTabBar'
+      'toggleTabBar',
+      'playCurrentSong',
+      'playAllSong',
+      'showPlayer'
+    ]),
+    ...mapActions([
+      'verifySong'
     ]),
     async getLikeList() {
       const loading = this.$toast.loading({
@@ -126,6 +140,13 @@ export default {
         this.creatorAvatarUrl = result.data.profile.avatarUrl
       } else {
         this.$toast(result.statusText)
+      }
+    },
+    play(song) {
+      if (this.verifySong(song.id)) {
+        this.showPlayer(true)
+        this.playCurrentSong(song)
+        this.playAllSong(this.songList)
       }
     }
   },

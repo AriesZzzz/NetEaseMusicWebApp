@@ -64,6 +64,11 @@ const findSongIndexById = (playList, songId) => {
   })
 }
 
+const findLikeId = (likeIds, likeId) => {
+  return likeIds.findIndex(item => {
+    return item === likeId
+  })
+}
 export default new Vuex.Store({
   state: {
     userInfo: {}, // 用户信息
@@ -115,6 +120,14 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    changeLikeIds(state, likeId) {
+      const index = findLikeId(state.likeIds, likeId)
+      if (index < 0) {
+        state.likeIds.push(likeId)
+      } else {
+        state.likeIds.splice(index, 1)
+      }
+    },
     toggleTabBar(state, isShowTabBar) {
       state.isShowTabBar = isShowTabBar
     },
@@ -152,7 +165,6 @@ export default new Vuex.Store({
     togglePlaying(state, isPlaying) {
       state.playing = isPlaying
     },
-    
     clearPlayList(state) {
       state.playList.length = 0
     },
