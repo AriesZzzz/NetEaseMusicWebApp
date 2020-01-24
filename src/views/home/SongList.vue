@@ -156,10 +156,10 @@ export default {
       if (newVal.params.id !== 'like_list') {
         console.log('其他歌单')
       } else {
-        if (this.songList.length === 0) {
+        if (oldVal !== 'like_list') {
           this.getLikeList()
           this.getCreatorInfo()
-        }
+        } 
       }
     }
   },

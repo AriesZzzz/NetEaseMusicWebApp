@@ -32,7 +32,7 @@
         <van-image width="50vw" round :src="blurPicUrl" />
       </div>
       <van-row class="play-info" v-show="showAlbum">
-        <van-col span="6" @click.stop="setLikeSong">
+        <van-col span="6" @click.stop="toggleIsLike">
           <!-- 喜欢 -->
           <van-icon class-prefix="icon" name="03" v-if="!isLike" />
           <!-- 不喜欢 -->
@@ -299,10 +299,10 @@ export default {
           return this.playingSong.id === id
         })
       }
-      if (isLikeSong() > 0) {
-        return true
-      } else {
+      if (isLikeSong() < 0) {
         return false
+      } else {
+        return true
       }
         
     }
@@ -327,9 +327,9 @@ export default {
     ]),
     toggleIsLike() {
       if (this.isLike) {
-        setLikeSong(false)
+        this.setLikeSong(false)
       } else {
-        setLikeSong(true)
+        this.setLikeSong(true)
       }
     },
     async setLikeSong(reqLikeOrDisLike) {
@@ -519,7 +519,6 @@ export default {
       if (newVal.id) {
         this.getLyric(newVal.id)
         this.getSongComments(newVal.id)
-        this.isLike = newVal.isLike
       }
     },
     begin(newVal, oldVal) {
