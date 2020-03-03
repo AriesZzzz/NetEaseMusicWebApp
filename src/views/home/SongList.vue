@@ -24,7 +24,7 @@
         <van-grid :border="false">
           <van-grid-item icon="chat-o" text="4" />
           <van-grid-item icon="share" text="分享" />
-          <van-grid-item icon="passed" text="多选" />
+          <van-grid-item icon="passed" text="多选" @click="$router.push({name: 'dragsort'})"/>
           <van-grid-item icon="more-o" text="更多" />
         </van-grid>
 

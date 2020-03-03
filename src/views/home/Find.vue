@@ -2,11 +2,7 @@
   <div class="find">
     <stair height="46px" />
     <!-- NavBar -->
-    <van-nav-bar
-      @click-right="onClickRight"
-      fixed
-      :border="false"
-    >
+    <van-nav-bar @click-right="onClickRight" fixed :border="false">
       <van-search
         placeholder="请输入搜索关键词"
         slot="title"
@@ -16,8 +12,7 @@
       />
     </van-nav-bar>
     <!-- /NavBar -->
-
-    <scroll class="scroll-container" :data="albums">
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <div class="container">
         <!-- Swipe -->
         <van-row type="flex" justify="center">
@@ -103,8 +98,9 @@
           />
         </div>
         <!-- /最新专辑-->
+        <stair />
       </div>
-    </scroll>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -120,7 +116,6 @@ import {
 import ImgBox from 'components/ImgBox'
 import AlbumsBox from 'components/AlbumsBox'
 import Stair from 'components/Stair'
-import Scroll from 'components/Scroll'
 
 import {
   Toast
@@ -196,8 +191,7 @@ export default {
   components: {
     ImgBox,
     AlbumsBox,
-    Stair,
-    Scroll
+    Stair
   }
 }
 </script>

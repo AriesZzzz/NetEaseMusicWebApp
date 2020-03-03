@@ -6,6 +6,8 @@ import 'common/scss/reset.scss'
 import 'common/icon/iconfont.css'
 import Cookie from 'vue-cookies'
 import Session from 'vue-session'
+
+
 // import fastclick from 'fastclick'
 import {
   Button,
@@ -33,7 +35,8 @@ import {
   Slider,
   Popup,
   Dialog,
-  CellGroup
+  CellGroup,
+  Checkbox, CheckboxGroup
 } from 'vant'
 
 Vue.use(Cookie)
@@ -64,6 +67,8 @@ Vue.use(Button)
   .use(Slider)
   .use(Popup)
   .use(Dialog)
+  .use(Checkbox).use(CheckboxGroup)
+
 
 /* 解决手机浏览器 click 300ms延迟, 会使输入框双击才能聚焦 */
 

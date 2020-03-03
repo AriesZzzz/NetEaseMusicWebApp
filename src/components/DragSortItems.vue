@@ -1,0 +1,94 @@
+<template>
+  <div class="song-list">
+    <van-row type="flex" justify="center" class="song-row">
+      <van-col span="22">
+          <div class="wrapper">
+            <div class="song-list-wrapper">
+              <p class="van-ellipsis song-name">{{songName}}</p>
+              <p    
+                class="van-ellipsis artists-name"
+              >{{artists | artistsNameFormatter}} - {{album.name}}</p>
+            </div>
+          </div>
+      </van-col>
+    </van-row>
+  </div>
+</template>
+
+<script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+export default {
+  props: {
+    id: {
+      type: Number,
+      default: 0
+    },
+    songName: {
+      type: String,
+      default: '别说了我爱你'
+    },
+    artists: {
+      type: Array,
+      default() {
+        return [
+          { name: '', id: '' }
+        ]
+      }
+    },
+    album: {
+      type: Object,
+      default() {
+        return {
+          name: "",
+          id: "",
+          blurPicUrl: "",
+          picUrl: ""
+        }
+      }
+    }
+  },
+  data() {
+      return {
+      }
+  },
+  computed: {
+    ...mapGetters([
+      'playingSong'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'verifySong'
+    ]),
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.wrapper {
+  display: flex;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.song-list-wrapper {
+  width: 70vw;
+  // margin-left: 3vw;
+}
+.artists-name {
+  font-size: 12px;
+  line-height: 27px;
+  color: #666;
+}
+.song-name {
+  margin-top: 1vh;
+  height: 3vh;
+}
+.song-row {
+  margin-bottom: 2vh;
+}
+
+</style>

@@ -4,6 +4,7 @@
 
 <script>
 export default {
+    name: 'stair',
     props: {
         height: {
             type: String,

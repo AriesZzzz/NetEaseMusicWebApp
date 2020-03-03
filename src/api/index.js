@@ -3,8 +3,8 @@ import {
     BASE
 } from 'common/constant'
 
-// 请求 banner
-export const reqBanner = () => request(BASE + '/banner')
+// 请求 banner, 防止浏览器从内存中读取数据
+export const reqBanner = () => request(BASE + '/banner', {time: Date.now()})
 
 // 验证手机是否注册
 export const verifyNewPhoneNum = (phone) => request(BASE + '/cellphone/existence/check', { phone })
@@ -16,10 +16,10 @@ export const verifyPassword = (phone, password) => request(BASE + '/login/cellph
 export const reqLogout = () => request(BASE + '/logout')
 
 // 请求推荐歌单
-export const reqResource = () => request(BASE + '/recommend/resource')
+export const reqResource = () => request(BASE + '/recommend/resource', {time: Date.now()})
 
 // 请求最新专辑
-export const reqNewAlbums = () => request(BASE + '/album/newest')
+export const reqNewAlbums = () => request(BASE + '/album/newest', {time: Date.now()})
 
 // 请求每日推荐歌曲
 export const reqRecommendSongs = () => request(BASE + '/recommend/songs')

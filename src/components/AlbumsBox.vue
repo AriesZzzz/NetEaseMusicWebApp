@@ -34,5 +34,6 @@ export default {
 .artists-name {
   font-size: 10px;
   color: #666;
+  line-height: 15px;
 }
 </style>
