@@ -53,7 +53,7 @@ export default {
     showOuterActions() {
       this.$emit('show-actions')
     }
-  },
+  }
 }
 </script>
 

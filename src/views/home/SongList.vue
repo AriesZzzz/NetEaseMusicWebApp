@@ -24,7 +24,7 @@
         <van-grid :border="false">
           <van-grid-item icon="chat-o" text="4" />
           <van-grid-item icon="share" text="分享" />
-          <van-grid-item icon="passed" text="多选" @click="$router.push({name: 'dragsort'})"/>
+          <van-grid-item icon="passed" text="多选" @click="$router.push({name: 'dragsort'})" />
           <van-grid-item icon="more-o" text="更多" />
         </van-grid>
 
@@ -58,7 +58,8 @@
 import {
   reqLikeList,
   reqSongInfo,
-  reqUserInfo
+  reqUserInfo,
+  reqPlayListDetail
 } from 'api'
 import {
   mapState,
@@ -69,6 +70,9 @@ import {
 import {
   OK
 } from 'common/constant'
+import {
+  songs_formatter
+} from 'utils'
 import SongListModel from 'components/SongListModel'
 import Scroll from 'components/Scroll'
 export default {
@@ -81,6 +85,14 @@ export default {
       songListPlayCount: '',
       songListCommentsCount: 0,
       songList: [],
+    }
+  },
+  created() {
+    if (this.$router.params.id !== 'like_list') {
+      this.getPlayListDetails(this.$router.params.id)
+    } else {
+      this.getLikeList()
+      this.getCreatorInfo()
     }
   },
   computed: {
@@ -96,10 +108,6 @@ export default {
       return this.$route.params.id === 'like_list' ? '我喜欢的音乐' : this.songListTitle
     }
   },
-  created() {
-    this.getLikeList()
-    this.getCreatorInfo()
-  },
   methods: {
     ...mapMutations([
       'setLikeListIds',
@@ -112,6 +120,30 @@ export default {
     ...mapActions([
       'verifySong'
     ]),
+    async getPlayListDetails(id) {
+      const loading = this.$toast.loading({
+        message: '正在努力加载...',
+        forbidClick: true
+      })
+      const result = await reqPlayListDetail(id)
+      if (result.status === OK) {
+        this.creatorName = result.data.playlist.creator.nickname
+        this.creatorAvatarUrl = result.data.playlist.creator.avatarUrl
+        let trackIds = result.data.playlist.trackIds.map(item => {
+          return item = item.id
+        })
+        const songInfo = await reqSongInfo(trackIds.toString())
+        loading.clear()
+        if (songInfo.status === OK) {
+          this.songList = songs_formatter(songInfo.data.songs)
+        } else {
+          this.$toast(songInfo.statusText)
+        }
+      } else {
+        this.$toast(result.statusText)
+      }
+
+    },
     async getLikeList() {
       const loading = this.$toast.loading({
         message: '正在努力加载...',
@@ -153,13 +185,12 @@ export default {
   watch: {
     $route(newVal, oldVal) {
       if (newVal.params.id) this.toggleTabBar(false)
-      if (newVal.params.id !== 'like_list') {
-        console.log('其他歌单')
-      } else {
-        if (oldVal !== 'like_list') {
-          this.getLikeList()
-          this.getCreatorInfo()
-        } 
+      if (newVal.params.id && newVal.params.id !== 'like_list') {
+        this.getPlayListDetails(newVal.params.id)
+      }
+      if (newVal.params.id === 'like_list') {
+        this.getLikeList()
+        this.getCreatorInfo()
       }
     }
   },

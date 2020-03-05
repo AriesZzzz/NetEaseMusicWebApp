@@ -19,6 +19,7 @@
                     :img="item.coverImgUrl"
                     :title="item.name"
                     :count="item.trackCount"
+                    @click.native="showPlayListDetails(item.id)"
                   />
                   <song-list-items
                     title="新建歌单"
@@ -35,6 +36,7 @@
                     :img="item.coverImgUrl"
                     :title="item.name"
                     :count="item.trackCount"
+                    @click.native="showPlayListDetails(item.id)"
                   />
                   <stair />
                 </div>
@@ -133,6 +135,9 @@ export default {
     ...mapMutations([
       'setUserInfo'
     ]),
+    showPlayListDetails(pid) {
+      this.$router.push({name: 'songlist', params: { id: pid}})
+    },
     async createNewList() {
       if (this.isOKColor === '#000') {
         const loading = this.$toast.loading({

@@ -69,6 +69,7 @@
             :playcount="item.playcount"
             :pic-url="item.picUrl"
             :name="item.name"
+            @click.native="showPlayListDetails(item.id)"
           />
         </div>
 
@@ -135,6 +136,9 @@ export default {
     this.getNewAlbums()
   },
   methods: {
+    showPlayListDetails(pid) {
+      this.$router.push({ name: 'songlist', params: { id: pid } })
+    },
     async getBanner() {
       const result = await reqBanner()
       if (result.status === OK) {

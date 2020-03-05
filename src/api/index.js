@@ -15,10 +15,10 @@ export const verifyPassword = (phone, password) => request(BASE + '/login/cellph
 // 退出登录
 export const reqLogout = () => request(BASE + '/logout')
 
-// 请求推荐歌单
+// 请求推荐歌单, 防止浏览器从内存中读取数据
 export const reqResource = () => request(BASE + '/recommend/resource', {time: Date.now()})
 
-// 请求最新专辑
+// 请求最新专辑, 防止浏览器从内存中读取数据
 export const reqNewAlbums = () => request(BASE + '/album/newest', {time: Date.now()})
 
 // 请求每日推荐歌曲

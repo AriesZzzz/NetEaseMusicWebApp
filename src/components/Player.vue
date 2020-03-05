@@ -24,6 +24,12 @@
     <!-- 专辑封面 -->
 
     <div class="album-lyric-wrapper" @click="toggleAlbumLyric">
+      <img 
+      src="../assets/arm.png" 
+      alt="唱臂" 
+      class="play-arm"
+      :style="armStyle" 
+      v-show="showAlbum" />
       <div
         class="rotateAlbumWrapper"
         :style="{animationPlayState: albumAnimation}"
@@ -304,7 +310,20 @@ export default {
       } else {
         return true
       }
-        
+    },
+    armStyle() {
+      let rotateDeg = ''
+      if (this.albumAnimation === 'running') {
+        rotateDeg = '-5deg'
+      } else {
+        rotateDeg = '-30deg'
+      }
+      return {
+        transition: 'all 1s',
+        transformOrigin: '12% 10%',
+        transform: `rotate(${rotateDeg})`
+      
+      }
     }
   },
   methods: {
@@ -333,12 +352,12 @@ export default {
       }
     },
     async setLikeSong(reqLikeOrDisLike) {
-        const result = await reqIsLikeSong(this.playingSong.id, reqLikeOrDisLike)
-        if (result.status === OK) {
-          this.changeLikeIds(this.playingSong.id)
-        } else {
-          this.$toast(result.statusText)
-        }
+      const result = await reqIsLikeSong(this.playingSong.id, reqLikeOrDisLike)
+      if (result.status === OK) {
+        this.changeLikeIds(this.playingSong.id)
+      } else {
+        this.$toast(result.statusText)
+      }
     },
     goToSongComments() {
       console.log('gotocomments');
@@ -633,6 +652,12 @@ export default {
     color: #fff;
     font-size: 8vw;
   }
+}
+.play-arm {
+  width: 20vw;
+  position: absolute;
+  left: 47vw;
+  z-index: 1000;
 }
 .rotateAlbumWrapper {
   width: 80vw;

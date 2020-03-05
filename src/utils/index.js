@@ -24,11 +24,11 @@ const songs_formatter = (songs) => {
     let tmpAlbum = {}
     let tmpName = ''
     songs.forEach(song => {
-        let { name, id, transName } = song
+        let { name, id, transName, tns } = song
         let artists = song.artists || song.ar
         let album = song.album || song.al
         tmpAlbum = new Album(album.name, album.id, album.blurPicUrl, album.picUrl, album.publishTime)
-        tmpName = `${name}${transName ? `(${transName})` : ''}`
+        tmpName = `${name}${transName ? `(${transName})` : `${tns ? `(${tns.toString()})` : ''}`}`
         artists.forEach(artist => {
             tmpArtists.push(new Artists(artist.name, artist.id))
         })
