@@ -49,7 +49,9 @@ export default new Vuex.Store({
     songIndex: 0 , // 歌曲索引
     songComments: {}, // 歌曲评论
     likeIds: [], //喜欢列表Id,
-    isShowTabBar: true
+    isShowTabBar: true, // 是否展示底部导航栏
+    createSongList: [] // 用户创建的歌单
+
   },
   getters: {
     playList(state) {
@@ -69,6 +71,12 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    createSongListGlobal(state, createSongList) {
+      state.createSongList = createSongList
+    },
+    refreshNewSongs(state, newSongs) {
+      state.newSongs = newSongs
+    },
     changeLikeIds(state, likeId) {
       const index = findLikeId(state.likeIds, likeId)
       if (index < 0) {

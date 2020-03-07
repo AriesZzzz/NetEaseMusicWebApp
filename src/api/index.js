@@ -4,7 +4,7 @@ import {
 } from 'common/constant'
 
 // 请求 banner, 防止浏览器从内存中读取数据
-export const reqBanner = () => request(BASE + '/banner', {time: Date.now()})
+export const reqBanner = () => request(BASE + '/banner', { time: Date.now() })
 
 // 验证手机是否注册
 export const verifyNewPhoneNum = (phone) => request(BASE + '/cellphone/existence/check', { phone })
@@ -16,10 +16,10 @@ export const verifyPassword = (phone, password) => request(BASE + '/login/cellph
 export const reqLogout = () => request(BASE + '/logout')
 
 // 请求推荐歌单, 防止浏览器从内存中读取数据
-export const reqResource = () => request(BASE + '/recommend/resource', {time: Date.now()})
+export const reqResource = () => request(BASE + '/recommend/resource', { time: Date.now() })
 
 // 请求最新专辑, 防止浏览器从内存中读取数据
-export const reqNewAlbums = () => request(BASE + '/album/newest', {time: Date.now()})
+export const reqNewAlbums = () => request(BASE + '/album/newest', { time: Date.now() })
 
 // 请求每日推荐歌曲
 export const reqRecommendSongs = () => request(BASE + '/recommend/songs')
@@ -53,7 +53,7 @@ export const reqLikeList = (uid) => request(BASE + '/likelist', { uid })
 export const reqUserInfo = (uid) => request(BASE + '/user/detail', { uid })
 
 // 请求用户歌单
-export const reqCreateList = (uid) => request(BASE + '/user/playlist', { uid })
+export const reqCreateList = (uid) => request(BASE + '/user/playlist', { uid, time: Date.now() })
 
 // 新建歌单
 export const reqCreateNewList = (name) => request(BASE + '/playlist/create', { name })
@@ -61,3 +61,5 @@ export const reqCreateNewList = (name) => request(BASE + '/playlist/create', { n
 // 获取歌单详情
 export const reqPlayListDetail = (id) => request(BASE + '/playlist/detail', { id })
 
+// 对歌单添加或删除歌曲
+export const updatePlayList = (op, pid, tracks) => request(BASE + '/playlist/tracks', { op, pid, tracks })

@@ -320,7 +320,7 @@ export default {
       }
       return {
         transition: 'all 1s',
-        transformOrigin: '12% 10%',
+        transformOrigin: '14% 10%',
         transform: `rotate(${rotateDeg})`
       
       }

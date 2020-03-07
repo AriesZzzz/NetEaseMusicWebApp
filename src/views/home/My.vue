@@ -112,7 +112,7 @@ export default {
       showInputListName: false,
       showCreateList: false,
       activeName: 'createlist',
-      createSongList: [],
+      createSongListLocal: [],
       collectSongList: []
     }
   },
@@ -122,7 +122,8 @@ export default {
   },
   computed: {
     ...mapState([
-      'uid'
+      'uid',
+      'createSongList'
     ]),
     createCount() {
       return `创建歌单(${this.createSongList.length})`
@@ -133,7 +134,8 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setUserInfo'
+      'setUserInfo',
+      'createSongListGlobal'
     ]),
     showPlayListDetails(pid) {
       this.$router.push({name: 'songlist', params: { id: pid}})
@@ -149,7 +151,8 @@ export default {
         if (result.status === OK) {
           this.$toast('创建歌单成功')
           this.showInputListName = false
-          this.createSongList.unshift(result.data.playlist)
+          this.createSongListLocal.unshift(result.data.playlist)
+          this.createSongListGlobal(this.createSongListLocal)
           this.songListTitle = ''
         } else {
           this.$toast(result.statusText)
@@ -183,7 +186,8 @@ export default {
     async getCreateList() {
       const result = await reqCreateList(this.uid)
       if (result.status === OK) {
-        this.createSongList = result.data.playlist.filter(item => !item.subscribed && !(item.id === LIKELISTID))
+        this.createSongListLocal = result.data.playlist.filter(item => !item.subscribed && !(item.id === LIKELISTID))
+        this.createSongListGlobal(this.createSongListLocal)
         this.collectSongList = result.data.playlist.filter(item => item.subscribed)
       } else {
         this.$toast(result.statusText)

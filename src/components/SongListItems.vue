@@ -1,7 +1,7 @@
 <template>
   <div class="song-list-items">
     <div class="list-wrapper" @click="showOuterActions">
-      <van-image width="18vw" height="18vw" radius="5" :src="img" lazy-load >
+      <van-image width="18vw" height="18vw" radius="5" :src="img" >
         <template v-slot:error v-if="showNewList">
           <van-icon name="add-o" size="6vw"/>
         </template>

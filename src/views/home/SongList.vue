@@ -24,7 +24,7 @@
         <van-grid :border="false">
           <van-grid-item icon="chat-o" text="4" />
           <van-grid-item icon="share" text="分享" />
-          <van-grid-item icon="passed" text="多选" @click="$router.push({name: 'dragsort'})" />
+          <van-grid-item icon="passed" text="多选" @click="$router.push({name: 'dragsort', params: {id: $route.params.id}})" />
           <van-grid-item icon="more-o" text="更多" />
         </van-grid>
 
@@ -88,8 +88,10 @@ export default {
     }
   },
   created() {
-    if (this.$router.params.id !== 'like_list') {
-      this.getPlayListDetails(this.$router.params.id)
+    this.toggleTabBar(false)
+
+    if (this.$route.params.id !== 'like_list') {
+      this.getPlayListDetails(this.$route.params.id)
     } else {
       this.getLikeList()
       this.getCreatorInfo()
@@ -135,7 +137,8 @@ export default {
         const songInfo = await reqSongInfo(trackIds.toString())
         loading.clear()
         if (songInfo.status === OK) {
-          this.songList = songs_formatter(songInfo.data.songs)
+           this.songsFormatter(songInfo.data.songs)
+           this.songList = this.newSongs
         } else {
           this.$toast(songInfo.statusText)
         }

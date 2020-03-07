@@ -110,7 +110,7 @@ const routes = [
         component: () => import('@/home/RecentPlay')
       },
       {
-        path: '/dragsort',
+        path: '/dragsort/:id',
         name: 'dragsort',
         component: () => import('@/home/DragSort')
       },
