@@ -123,7 +123,7 @@ export default new Vuex.Store({
       state.playing = isPlaying
     },
     clearPlayList(state) {
-      state.playList.length = 0
+      state.playList = []
     },
     clearPlayingSong(state) {
       state.playingSong = {

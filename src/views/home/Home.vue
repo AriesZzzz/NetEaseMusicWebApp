@@ -1,16 +1,12 @@
 <template>
   <div class="home">
-    <van-icon
-      name="bar-chart-o"
-      slot="right"
-      size="24"
+    <music-dance-icon
       class="player-icon"
-      @click="showPlayer"
+      :paused="isPaused"
+      @click.native="showPlayer"
       v-show="!isShowPlayer && !isPlayingListEmpty"
     />
-
     <player v-show="isShowPlayer" />
-
 
     <keep-alive>
       <router-view />
@@ -32,6 +28,7 @@ import {
   mapState
 } from 'vuex'
 import Player from 'components/Player'
+import MusicDanceIcon from 'components/MusicDanceIcon'
 export default {
   data() {
     return {
@@ -56,14 +53,19 @@ export default {
   },
   computed: {
     ...mapState([
-      'isShowTabBar'
+      'isShowTabBar',
+      'playing'
     ]),
     ...mapGetters([
       'isShowPlayer',
       'playList'
     ]),
     isPlayingListEmpty() {
+      console.log(this.playList.length);
       return this.playList.length === 0
+    },
+    isPaused() {
+      return !this.playing
     }
   },
   methods: {
@@ -75,7 +77,8 @@ export default {
     ])
   },
   components: {
-    Player
+    Player,
+    MusicDanceIcon
   }
 }
 </script>

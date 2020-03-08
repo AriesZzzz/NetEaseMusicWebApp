@@ -5,8 +5,15 @@
 </template>
 <script>
 import {
-  mapMutations
+  mapMutations,
+  mapState
 } from 'vuex'
+import {
+  reqLikeList
+} from 'api'
+import {
+  OK
+} from 'common/constant'
 export default {
   created() {
     const token = this.$session.get('token')
@@ -15,12 +22,29 @@ export default {
       this.setToken(token)
       this.setUid(uid)
     }
+
+    // 在界面刚初始化时就获取喜欢列表，防止由于未进入喜欢列表而导致无法点亮爱心
+    this.getLikeList()
+  },
+  computed: {
+    ...mapState([
+      'uid'
+    ])
   },
   methods: {
     ...mapMutations([
       'setToken',
-      'setUid'
-    ])
+      'setUid',
+      'setLikeListIds'
+    ]),
+     async getLikeList() {
+      const result = await reqLikeList(this.uid)
+      if (result.status === OK) {
+        this.setLikeListIds(result.data.ids)
+      } else {
+        this.$toast(result.statusText)
+      }
+    },
   }
 }
 </script>

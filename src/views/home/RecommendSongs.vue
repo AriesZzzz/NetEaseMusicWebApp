@@ -19,7 +19,7 @@
           @click="play(item)"
         >
           <van-col span="22">
-            <van-swipe-cell :stop-propagation="false">
+            <van-swipe-cell>
               <div class="wrapper">
                 <van-image
                   width="50"

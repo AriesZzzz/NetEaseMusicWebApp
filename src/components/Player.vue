@@ -39,10 +39,10 @@
       </div>
       <van-row class="play-info" v-show="showAlbum">
         <van-col span="6" @click.stop="toggleIsLike">
-          <!-- 喜欢 -->
-          <van-icon class-prefix="icon" name="03" v-if="!isLike" />
           <!-- 不喜欢 -->
-          <van-icon class-prefix="icon" name="xin-" v-else />
+          <van-icon class-prefix="icon" name="03" v-if="!isLike" />
+          <!-- 喜欢 -->
+          <van-icon class-prefix="icon" name="xin-" v-else color="#E35454"/>
         </van-col>
         <van-col span="6">
           <van-icon name="star-o" />

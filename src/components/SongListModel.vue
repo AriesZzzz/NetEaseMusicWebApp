@@ -2,7 +2,7 @@
   <div class="song-list">
     <van-row type="flex" justify="center" class="song-row">
       <van-col span="22">
-        <van-swipe-cell :stop-propagation="true">
+        <van-swipe-cell>
           <div class="wrapper" :style="{color: uselessColor}">
             <div class="song-index" :style="{color}">
               <span v-if="playingSong.id === id"><van-icon name="volume-o" /></span>
