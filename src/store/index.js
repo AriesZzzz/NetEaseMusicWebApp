@@ -107,8 +107,15 @@ export default new Vuex.Store({
     playAllSong(state, songList) {
       state.playList = JSON.parse(JSON.stringify(songList))
     },
-    playSingleSong(state, song) {
-      state.playList.push(song)
+    playCheckedSong(state, songs) {
+      let insertIndex = findSongIndexById(state.playList, state.playingSong.id)
+      // 如果播放列表里没有歌曲，则直接播放
+      if (!state.playList.length) {
+        state.playingSong = songs[0]
+        state.playList = songs
+        return
+      }
+      state.playList.splice(insertIndex + 1, 0, ...songs) // 插入已选择的歌曲
     },
     songsFormatter(state, songs) {
       state.newSongs = songs_formatter(songs)

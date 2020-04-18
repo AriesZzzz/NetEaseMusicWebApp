@@ -115,7 +115,12 @@ Vue.filter('timeFormatter', time => {
     return minute + isM0 + sec
 
 })
+// 格式化日期
+Vue.filter('dateFormatter', time => {
+  let afterTime = new Date(time)
+  return `${afterTime.getFullYear()}年${afterTime.getMonth() + 1}月${afterTime.getDate()}日`
 
+})
 new Vue({
   router,
   store,

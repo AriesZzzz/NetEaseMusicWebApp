@@ -4,8 +4,13 @@
     <scroll class="scroll-container" :data="createSongList">
       <div class="container">
         <van-cell-group title="我的音乐">
-          <van-cell title="我喜欢的音乐" icon="like-o" is-link :to="{name: 'songlist', params: { id: 'like_list'}}" />
-          <van-cell title="最近播放" icon="service-o" is-link :to="{name: 'recentplay'}" />
+          <van-cell
+            title="我喜欢的音乐"
+            icon="like-o"
+            is-link
+            :to="{name: 'songlist', params: { id: 'like_list'}}"
+          />
+          <!--<van-cell title="最近播放" icon="service-o" is-link :to="{name: 'recentplay'}" />-->
         </van-cell-group>
 
         <van-row type="flex" justify="center">
@@ -13,22 +18,24 @@
             <van-tabs v-model="activeName" animated swipeable>
               <van-tab :title="createCount" name="createlist">
                 <div class="song-list-wrapper">
-                  <song-list-items
-                    v-for="(item, index) in createSongList"
-                    :key="index"
-                    :img="item.coverImgUrl"
-                    :title="item.name"
-                    :count="item.trackCount"
-                    @click.native="showPlayListDetails(item.id)"
-                  />
+                    <song-list-items
+                      v-for="(item, index) in createSongList"
+                      :key="index"
+                      :img="item.coverImgUrl"
+                      :title="item.name"
+                      :count="item.trackCount"
+                      @click.native="showPlayListDetails(item.id)"
+                      ref="song_list_items"
+                    />
                   <song-list-items
                     title="新建歌单"
                     :showNewList="true"
+                    img
                     @show-actions="showNewListActions"
                   />
                 </div>
               </van-tab>
-              <van-tab :title="collectCount" name="collectlist">
+              <van-tab :title="collectCount" name="collectlist" :style="{borderLeft: '1px solid #fff'}">
                 <div class="song-list-wrapper">
                   <song-list-items
                     v-for="(item, index) in collectSongList"
@@ -103,9 +110,6 @@ export default {
           name: '新建歌单'
         },
         {
-          name: '管理歌单'
-        },
-        {
           name: '切换至单列模式'
         }
       ],
@@ -138,7 +142,7 @@ export default {
       'createSongListGlobal'
     ]),
     showPlayListDetails(pid) {
-      this.$router.push({name: 'songlist', params: { id: pid}})
+      this.$router.push({ name: 'songlist', params: { id: pid } })
     },
     async createNewList() {
       if (this.isOKColor === '#000') {
@@ -166,9 +170,19 @@ export default {
           this.showInputListName = true
           this.showCreateList = false
           break
-        case '管理歌单':
-          break
         case '切换至单列模式':
+          this.showCreateList = false
+          this.$refs.song_list_items.forEach(item => {
+            item.changeDisplayModel('single')
+          })
+          this.actions[1].name = '切换至双列模式'
+          break
+        case '切换至双列模式':
+          this.showCreateList = false
+          this.$refs.song_list_items.forEach(item => {
+            item.changeDisplayModel('double')
+          })
+          this.actions[1].name = '切换至单列模式'
           break
       }
     },
@@ -237,4 +251,5 @@ export default {
 .group {
   margin-top: 4vh;
 }
+
 </style>

@@ -40,7 +40,7 @@ const songs_formatter = (songs) => {
 }
 // 优化随机算法
 const getRandomSong = (playList, max) => {
-    let tmpPlayList = playList.slice(0) // 浅拷贝
+    let tmpPlayList = playList.slice(0)
     tmpPlayList.sort(() => (0.5 - Math.random().toFixed(2)))
     return tmpPlayList[Math.floor(Math.random().toFixed(2) * max)]
 }

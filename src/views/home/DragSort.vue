@@ -92,7 +92,8 @@ export default {
     ...mapMutations([
       'toggleTabBar',
       'refreshNewSongs',
-      'createSongListGlobal'
+      'createSongListGlobal',
+      'playCheckedSong'
     ]),
     async addSongsToList(playListId) {
       const loading = this.$toast.loading({
@@ -119,7 +120,10 @@ export default {
       if (!this.results.length) {
         this.$toast('请选择要播放的歌曲')
       } else {
-
+        let tmpArr = this.newSongs.filter(item => {
+          return this.results.includes(item.id)
+        })
+        this.playCheckedSong(tmpArr)
       }
     },
     addItemToPlayList() {

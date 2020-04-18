@@ -177,7 +177,7 @@
           <span>当前播放({{playList.length}})</span>
         </van-col>
         <van-col span="13">
-          <van-icon name="plus" />收藏全部
+          <!--<van-icon name="plus" />收藏全部-->
         </van-col>
         <van-col span="2">
           <!-- 清空播放列表 -->
@@ -331,7 +331,6 @@ export default {
       'showPlayer',
       'togglePlaying',
       'clearPlayList',
-      'showPlayer',
       'clearPlayingSong',
       'playCurrentSong',
       'togglePlayMode',
@@ -360,7 +359,8 @@ export default {
       }
     },
     goToSongComments() {
-      console.log('gotocomments');
+      this.showPlayer(false)
+      this.$router.push({name: 'comment'})
     },
     async getSongComments(id) {
       const result = await reqSongComments(id)

@@ -13,16 +13,6 @@ const beforeEnter = (to, from, next) => {
   if (sessionValue.token) {
     next({ path: '/find' })
   } else {
-    // 如果进入下面路由不是从hellomusic进入的话，跳转到hellomusic
-    // if (to.path === '/password' || to.path === '/login' || to.path === '/register') {
-    //   if (from.path !== '/hellomusic') {
-    //     next({ path: '/hellomusic' })
-    //   } else {
-    //     next()
-    //   }
-    // } else {
-    //   next()
-    // }
     next()
   }
 
@@ -105,15 +95,15 @@ const routes = [
         component: () => import('@/home/SongList')
       },
       {
-        path: '/recentplay',
-        name: 'recentplay',
-        component: () => import('@/home/RecentPlay')
-      },
-      {
         path: '/dragsort/:id',
         name: 'dragsort',
         component: () => import('@/home/DragSort')
       },
+      {
+        path: '/comment',
+        name: 'comment',
+        component: () => import('@/home/Comment')
+      }
     ]
   },
   {

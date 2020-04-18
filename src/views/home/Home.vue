@@ -61,7 +61,6 @@ export default {
       'playList'
     ]),
     isPlayingListEmpty() {
-      console.log(this.playList.length);
       return this.playList.length === 0
     },
     isPaused() {
@@ -75,6 +74,24 @@ export default {
     ...mapMutations([
       'showPlayer'
     ])
+  },
+  watch: {
+    $route(newVal, oldVal) {
+      switch (newVal.path) {
+        case '/find':
+          this.active = 0
+          break
+        case '/my':
+          this.active = 1
+          break
+        case '/cloudvlg':
+          this.active = 2
+          break
+        case '/account':
+          this.active = 3
+          break
+      }
+    }
   },
   components: {
     Player,

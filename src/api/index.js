@@ -59,7 +59,10 @@ export const reqCreateList = (uid) => request(BASE + '/user/playlist', { uid, ti
 export const reqCreateNewList = (name) => request(BASE + '/playlist/create', { name })
 
 // 获取歌单详情
-export const reqPlayListDetail = (id) => request(BASE + '/playlist/detail', { id })
+export const reqPlayListDetail = (id) => request(BASE + '/playlist/detail', { id, time: Date.now() })
 
 // 对歌单添加或删除歌曲
 export const updatePlayList = (op, pid, tracks) => request(BASE + '/playlist/tracks', { op, pid, tracks })
+
+// 给评论点赞
+export const reqLikeComment = (id, cid, t, type = 0) => request(BASE + '/comment/like', {id, cid, t, type})
