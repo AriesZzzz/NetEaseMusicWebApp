@@ -15,7 +15,7 @@
     <van-tabbar v-model="active" v-show="isShowTabBar">
       <van-tabbar-item icon="home-o" replace to="/find">发现</van-tabbar-item>
       <van-tabbar-item icon="music-o" replace to="/my">我的</van-tabbar-item>
-      <van-tabbar-item icon="friends-o" info="5" replace to="/cloudvlg">云村</van-tabbar-item>
+      <van-tabbar-item icon="search" info="5" replace to="/search">搜索</van-tabbar-item>
       <van-tabbar-item icon="user-o" info="20" replace to="/account">账号</van-tabbar-item>
     </van-tabbar>
   </div>
@@ -43,7 +43,7 @@ export default {
       case '/my':
         this.active = 1
         break
-      case '/cloudvlg':
+      case '/search':
         this.active = 2
         break
       case '/account':
@@ -84,7 +84,7 @@ export default {
         case '/my':
           this.active = 1
           break
-        case '/cloudvlg':
+        case '/search':
           this.active = 2
           break
         case '/account':

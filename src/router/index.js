@@ -70,19 +70,14 @@ const routes = [
         component: () => import('@/home/My')
       },
       {
-        path: '/cloudvlg',
-        name: 'cloudvlg',
-        component: () => import('@/home/Cloudvlg')
+        path: '/search',
+        name: 'search',
+        component: () => import('@/home/Search')
       },
       {
         path: '/account',
         name: 'account',
         component: () => import('@/home/Account')
-      },
-      {
-        path: '/search',
-        name: 'search',
-        component: () => import('@/home/Search')
       },
       {
         path: '/recommendsongs',
@@ -103,7 +98,13 @@ const routes = [
         path: '/comment',
         name: 'comment',
         component: () => import('@/home/Comment')
-      }
+      },
+      {
+        path: '/userInfo',
+        name: 'userInfo',
+        component: () => import('@/home/UserInfo')
+      },
+
     ]
   },
   {

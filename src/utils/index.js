@@ -1,3 +1,5 @@
+import areaData from '../assets/area'
+
 // 格式化歌曲信息
 function Song(name, id, artists, album) {
     this.name = name
@@ -56,10 +58,23 @@ const findLikeId = (likeIds, likeId) => {
         return item === likeId
     })
 }
+// 查找地区省市
+const findArea = (pCode, cCode) => {
+    // 省
+    const province = areaData.province_list[pCode]
+    // 市
+    const city =  areaData.city_list[cCode]
 
+    return {
+        province,
+        city
+    }
+
+}
 export {
     songs_formatter,
     getRandomSong,
     findSongIndexById,
-    findLikeId
+    findLikeId,
+    findArea
 }

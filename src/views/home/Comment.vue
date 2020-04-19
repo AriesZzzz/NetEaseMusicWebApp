@@ -64,7 +64,7 @@
                 'setSongComments'
             ]),
             async getSongComments(id) {
-                const result = await reqSongComments(this.playingSong.id)
+                const result = await reqSongComments(id)
                 if (result.status === OK) {
                     this.setSongComments(result.data)
                 } else {

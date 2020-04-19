@@ -189,14 +189,6 @@ export default {
     showNewListActions() {
       this.showCreateList = true
     },
-    async getUserInfo() {
-      const result = await reqUserInfo(this.uid)
-      if (result.status === OK) {
-        this.setUserInfo(result.data)
-      } else {
-        this.$toast(result.statusText)
-      }
-    },
     async getCreateList() {
       const result = await reqCreateList(this.uid)
       if (result.status === OK) {

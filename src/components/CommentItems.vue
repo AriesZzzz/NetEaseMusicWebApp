@@ -64,10 +64,6 @@
                 'playingSong'
             ])
         },
-        mounted() {
-            this.tmpLiked = this.liked
-            this.tmpLikedCount = this.likedCount
-        },
         methods: {
             async getLiked() {
                 let isLike = this.tmpLiked ? 0 : 1 // 0 取消点赞，1 点赞
@@ -81,13 +77,13 @@
             }
         },
         watch: {
-            // $route(newVal, oldVal) {
-            //     if (newVal.name === 'comment') {
-            //         this.tmpLiked = this.liked
-            //         this.tmpLikedCount = this.likedCount
-            //     }
-            //
-            // }
+            $route(newVal, oldVal) {
+                if (newVal.name === 'comment') {
+                    this.tmpLiked = this.liked
+                    this.tmpLikedCount = this.likedCount
+                }
+
+            }
         }
     }
 </script>
