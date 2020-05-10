@@ -50,7 +50,7 @@
                 ],
                 showDate: false,
                 birthday: '',
-                minDate: new Date(1920, 0, 1)
+                minDate: new Date(1920, 0, 1) // 修改最小时间，点击跳转到1998年
             }
         },
         created() {
