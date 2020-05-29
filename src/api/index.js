@@ -68,7 +68,7 @@ export const updatePlayList = (op, pid, tracks) => request(BASE + '/playlist/tra
 export const reqLikeComment = (id, cid, t, type = 0) => request(BASE + '/comment/like', {id, cid, t, type})
 
 // 更新用户信息
-export const updateUserInfo = (gender, signature, nickname, birthday, city = 510100, province = 510000) => request(BASE + '/user/update', {
+export const updateUserInfo = ({gender, signature, nickname, birthday, city, province}) => request(BASE + '/user/update', {
     gender,
     signature,
     city,
@@ -76,3 +76,9 @@ export const updateUserInfo = (gender, signature, nickname, birthday, city = 510
     birthday,
     province
 })
+
+// 热搜列表
+export const reqHotList = () => request(BASE + '/search/hot/detail')
+
+// 搜索结果列表
+export const reqSearchList = (keywords) => request(BASE + '/search', {keywords})

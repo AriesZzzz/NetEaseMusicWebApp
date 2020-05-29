@@ -64,6 +64,10 @@
                 'playingSong'
             ])
         },
+        created(){
+            this.tmpLikedCount = this.likedCount
+            this.tmpLiked = this.liked
+        },
         methods: {
             async getLiked() {
                 let isLike = this.tmpLiked ? 0 : 1 // 0 取消点赞，1 点赞

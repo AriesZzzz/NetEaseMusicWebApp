@@ -37,7 +37,8 @@ import {
     CellGroup,
     Checkbox, CheckboxGroup,
     RadioGroup, Radio,
-    Calendar
+    DatetimePicker,
+    Area
 } from 'vant'
 
 Vue.use(Cookie)
@@ -70,7 +71,8 @@ Vue.use(Button)
     .use(Dialog)
     .use(Checkbox).use(CheckboxGroup)
     .use(Radio).use(RadioGroup)
-    .use(Calendar)
+    .use(DatetimePicker)
+    .use(Area)
 
 /* 解决手机浏览器 click 300ms延迟, 会使输入框双击才能聚焦 */
 

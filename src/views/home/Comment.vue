@@ -51,6 +51,9 @@
         data() {
             return {}
         },
+        created() {
+
+        },
         computed: {
             ...mapState([
                 'songComments',
@@ -71,6 +74,11 @@
                     this.$toast(result.statusText)
                 }
             },
+            setComments() {
+                this.getSongComments(this.playingSong.id)
+                this.toggleTabBar(false)
+                this.$refs.songInfo.changeDisplayModel('single')
+            }
         },
         components: {
             SongListItems,
@@ -80,9 +88,7 @@
         watch: {
             $route(newVal, oldVal) {
                 if (newVal.name === 'comment') {
-                    this.getSongComments(this.playingSong.id)
-                    this.toggleTabBar(false)
-                    this.$refs.songInfo.changeDisplayModel('single')
+                    this.setComments()
                 }
             }
         },
