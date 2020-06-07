@@ -118,7 +118,8 @@
         methods: {
             ...mapMutations([
                 'removeUserInfo',
-                'setUserInfo'
+                'setUserInfo',
+                'playCurrentSong'
             ]),
              logout() {
                 this.$dialog.confirm({
@@ -130,7 +131,24 @@
                             this.$toast('退出登录')
                             this.removeUserInfo()
                             this.$session.remove('token')
-                            this.$router.replace({name: 'find'})
+                            this.$router.replace({name: 'hellomusic'})
+                            this.playCurrentSong({
+                                name: '',
+                                id: '',
+                                artists: [
+                                    {
+                                        name: '',
+                                        id: ''
+                                    }
+                                ],
+                                album: {
+                                    name: '',
+                                    id: '',
+                                    blurPicUrl: '',
+                                    picUrl: '',
+                                    publishTime: ''
+                                }
+                            })
                         }
                     })
                     .catch(() => {

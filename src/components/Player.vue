@@ -35,7 +35,7 @@
                 :style="{animationPlayState: albumAnimation}"
                 v-show="showAlbum"
             >
-                <van-image width="50vw" round :src="blurPicUrl"/>
+                <van-image width="50vw" round :src="blurPicUrl" v-if="blurPicUrl"/>
             </div>
             <van-row class="play-info" v-show="showAlbum">
                 <van-col span="6" @click.stop="toggleIsLike">

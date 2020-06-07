@@ -11,8 +11,8 @@
             />
         </van-nav-bar>
         <Stair></Stair>
-        <p style="padding-left: 20px;"><b>热搜榜</b></p>
         <div class="list-item" v-show="showHotList">
+            <p style="padding: 20px;"><b>热搜榜</b></p>
             <hot-list-item
                 v-for="(item, index) in hotList"
                 :song-name="item.searchWord"
@@ -23,13 +23,15 @@
             />
         </div>
         <div class="list-item" v-show="!showHotList">
-            <hot-list-item
-                v-for="(item, index) in hotList"
-                :song-name="item.searchWord"
-                :content="item.content"
+            <p style="padding: 20px;"><b>搜索结果</b></p>
+            <search-list-item
+                v-for="(item, index) in searchList"
                 :index="index + 1"
-                :score="item.score"
-                :icon-url="item.iconUrl"
+                :song-name="item.name"
+                :content="item.content"
+                :artists="item.artists"
+                :album="item.album"
+                @click.native="play(item)"
             />
         </div>
         <Stair></Stair>
@@ -40,23 +42,38 @@
 <script>
     import Stair from 'components/Stair'
     import HotListItem from 'components/HotListItem'
+    import SearchListItem from 'components/SearchListItem'
     import {
         reqHotList,
         reqSearchList
     } from 'api'
-
+    import {
+        mapMutations,
+        mapActions
+    } from 'vuex'
     export default {
+        name: 'Search',
         data() {
             return {
                 searchVal: '',
                 hotList: [],
-                showHotList: true
+                showHotList: true,
+                timer: 0,
+                searchList: []
             }
         },
         created() {
             this.getHotList()
         },
         methods: {
+            ...mapMutations([
+                'playCurrentSong',
+                'showPlayer',
+                'playCheckedSong'
+            ]),
+            ...mapActions([
+                'verifySong'
+            ]),
             async getHotList() {
                 let result = await reqHotList()
                 if (result.data.code === 200) {
@@ -66,27 +83,38 @@
             async getSearchResult() {
                 let result = await reqSearchList(this.searchVal)
                 if (result.data.code === 200) {
-                    console.log(result)
+                    this.searchList = result.data.result.songs.slice(0, 20)
+
                 }
             },
             // 防抖函数
             debounce(fn, wait) {
-                let timeout
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
+                clearTimeout(this.timer);
+                this.timer = setTimeout(() => {
                     fn.apply(this)
                 }, wait)
-
             },
             search() {
                 if (this.searchVal) {
                     this.debounce(this.getSearchResult, 1000)
                 }
+            },
+            play(song) {
+                if (this.verifySong(song.id)) {
+                    this.showPlayer(true)
+                    this.playCurrentSong(song)
+                }
+            }
+        },
+        watch: {
+            searchVal(newVal) {
+                this.showHotList = !newVal
             }
         },
         components: {
             Stair,
-            HotListItem
+            HotListItem,
+            SearchListItem
         },
     }
 </script>

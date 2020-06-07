@@ -1,5 +1,8 @@
 <template>
   <div class="hello-music">
+    <div class="logo">
+      <img src="../../assets/music-logo.webp" alt="" >
+    </div>
     <van-row type="flex" justify="center" class="btn-group">
       <van-col span="22">
         <van-button
@@ -41,7 +44,7 @@ export default {
 @import "common/scss/variable";
 .hello-music {
   height: 100vh;
-  background-color: $main-color;
+  background-color: #e30000;
   position: relative;
 }
 .btn-group {
@@ -57,5 +60,13 @@ export default {
 }
 .do-not-login {
   border: 1px solid#fff !important;
+}
+.logo {
+  width: 100vw;
+  padding-top: 15vh;
+  & > img {
+    display: block;
+    margin: 0 auto;
+  }
 }
 </style>
